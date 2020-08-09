@@ -10,6 +10,10 @@ s - player 1 down
 arrow up = player 2 up
 arrow down = player 2 down
 
+##Build
+On linux simply type the command "make" then run a.out
+On other systems... open an IDE and add the programming files to that project and configure SDL2... Yeah.
+
 
 
 I really hope the youtube videos are helpfull.
