@@ -25,10 +25,8 @@ int main(int argc, char ** arg)
 					switch(ev.key.keysym.sym)
 					{
 						case SDLK_UP:
-							speedy = -1;
 							break;
 						case SDLK_DOWN:
-							speedy = 1;
 							break;
 					}
 
@@ -37,10 +35,8 @@ int main(int argc, char ** arg)
 					switch(ev.key.keysym.sym)
 					{
 						case SDLK_UP:
-							speedy = 0;
 							break;
 						case SDLK_DOWN:
-							speedy = 0;
 							break;
 					}
 
@@ -51,6 +47,8 @@ int main(int argc, char ** arg)
 
 		SDL_RenderClear(screen);
 
+
+		SDL_RenderPresent(screen);
 		int delta = SDL_GetTicks() - startLoop;
 		if(delta < desiredDelta)
 		{
