@@ -168,7 +168,6 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 	int leng = zb.length() - 1;
 	while(addImage(p + zb + ext) && zb[0] < '9')
 	{
-		std::cout << "Added " << zb << "\n";
 		zb[leng] ++;
 		for(int i = leng; i > 0; i --)
 		{
