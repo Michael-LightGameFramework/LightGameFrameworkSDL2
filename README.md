@@ -1,5 +1,5 @@
 # Light Game Framework SDL2
-Following: https://www.youtube.com/channel/UCaKToiAPfhOgxqy7Wuyjkqw 
+Code is the result of the Following: https://www.youtube.com/channel/UCaKToiAPfhOgxqy7Wuyjkqw 
 This is the code that is created during the series.
 
 # Demo Folder
