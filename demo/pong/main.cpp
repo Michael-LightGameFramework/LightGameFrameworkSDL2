@@ -17,7 +17,7 @@ void saveScreen(const char* file_name, SDL_Renderer* renderer) {
 int main(int argc, char ** arg)
 {
 	itemInit();
-	SDL_Window * win = SDL_CreateWindow("title", 30, 30, 2048, 1152, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	SDL_Window * win = SDL_CreateWindow("Pong-Like Game", 30, 30, 2048, 1152, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	SDL_Renderer * screen = SDL_CreateRenderer(win, -1, 0);
 	SDL_Texture * target = SDL_GetRenderTarget(screen); 
 
