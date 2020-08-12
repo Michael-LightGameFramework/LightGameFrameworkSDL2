@@ -4,6 +4,25 @@
 #include <vector>
 #include <iostream>
 
+class grass : public item
+{
+	public:
+	void draw();
+	void setBlade(item * gb);
+	private:
+	item * blade;
+};
+void grass::setBlade(item * gb)
+{
+	blade = gb;
+}
+
+void grass::draw()
+{
+	SDL_RenderCopy(ren, blade->getImage(), NULL, &pos);	
+}
+
+
 
 int main(int argc, char ** arg)
 {
@@ -11,23 +30,25 @@ int main(int argc, char ** arg)
 	int W = 1900, H = 1200;
 	SDL_Window * win = SDL_CreateWindow("title", 30, 30, W, H, SDL_WINDOW_SHOWN);
 	SDL_Renderer * screen = SDL_CreateRenderer(win, -1, 0);
+	animation grass1;
+	grass1.setRenderer(screen);
+	grass1.loadAnimation("grass", "0", ".png");
 
 	animation bob;
 	bob.setRenderer(screen);
 	bob.setSize(100, 150);
 	bob.loadAnimation("run/JK_P_Sword__Run_", "000", ".png");
 
-	std::vector <animation *> field;
+	std::vector <grass *> field;
 	int bladeCount = 1000000;
 
 	for(int i = 0; i < bladeCount; i ++)
 	{
-		field.push_back(new animation);
+		field.push_back(new grass);
 		field[i]->setRenderer(screen);
-		field[i]->loadAnimation("grass", "0", ".png");
+		field[i]->setBlade(&grass1);
 		field[i]->setSize(25, 50);
 		field[i]->setPos(rand() % W, rand() % H);
-		std::cout << "Allocated " << i << " blades of grass\n";
 
 	}
 
@@ -82,7 +103,6 @@ int main(int argc, char ** arg)
 		for(int i = 0; i < shown; i ++)
 		{
 			field[i]->draw();
-			field[i]->next();
 		}
 		bob.draw();
 		int add = shown / 100;
@@ -99,6 +119,7 @@ int main(int argc, char ** arg)
 		bob.next();
 		bob.move(0, bspeedy);
 		SDL_RenderPresent(screen);
+		grass1.next();
 		int delta = SDL_GetTicks() - startLoop;
 		if(delta < desiredDelta)
 		{
