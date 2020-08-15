@@ -27,6 +27,7 @@ class item
 	SDL_Rect * getPos();
 	void move(int x, int y);
 	bool getCollision(item* other);
+	bool isClicked(int x, int y);
 	circle getCenter();
 	void setCenter(int x, int y, int r);
 	void draw(double angle);

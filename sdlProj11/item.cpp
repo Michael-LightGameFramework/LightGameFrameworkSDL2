@@ -99,6 +99,18 @@ bool item::getCollision(item * other)
 
 }
 
+bool item::isClicked(int x, int y)
+{
+	int dx, dy, rs;
+	dx = pos.x + center.x - x;
+	dy = pos.y + center.y - y;
+	rs = center.r;
+	dx *= dx;
+	dy *= dy;
+	rs *= rs;
+	return (dx + dy < rs);
+}
+
 circle item::getCenter()
 {
 	return center;

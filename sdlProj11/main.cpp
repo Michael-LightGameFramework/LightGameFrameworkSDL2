@@ -12,7 +12,7 @@ int main(int argc, char ** arg)
 
 	animation bob;
 	bob.setRenderer(screen);
-	bob.loadAnimation("Hero-Guy-PNG/_Mode-Sword/01-Idle/JK_P_Sword__Idle_", \
+	bob.loadAnimation("Hero-Guy-PNG/_Mode-Sword/02-Run/JK_P_Sword__Run_", \
 			"000", ".png");
 	bob.setPos(30, 30);
 	bob.setSize(100, 100);
@@ -34,6 +34,7 @@ int main(int argc, char ** arg)
 	box.setRenderer(screen);
 	box.setSize(50, 50);
 	box.setPos(200, 100);
+	box.setCenter(25, 25, 12);
 	std::string path = "heart/";
 	std::string count = "0000";
 	std::string ext = ".png";
@@ -48,12 +49,13 @@ int main(int argc, char ** arg)
 		box.addImage(path + count + ext);
 	}
 
+	bool boxHidden = false;
 	bool run = true;
 	int speedx = 0;
 	int speedy = 0;
 	SDL_SetRenderDrawColor(screen, 30, 180, 20, 255);
 	double ang = 0;
-	int fps = 13;
+	int fps = 60;
 	int desiredDelta = 1000 / fps;
 	while(run)
 	{
@@ -65,6 +67,12 @@ int main(int argc, char ** arg)
 			{
 				case SDL_QUIT:
 					run = false;
+					break;
+				case SDL_MOUSEBUTTONUP:
+					if(box.isClicked(ev.button.x, ev.button.y))
+					{
+						boxHidden = true;
+					}
 					break;
 				case SDL_KEYDOWN:
 					switch(ev.key.keysym.sym)
@@ -110,7 +118,10 @@ int main(int argc, char ** arg)
 
 		SDL_RenderClear(screen);
 		bob.draw();
-		box.draw();
+		if(!boxHidden)
+		{
+			box.draw();
+		}
 		for(int i = 0; i < maxGems; i ++)
 		{
 			if(bob.getCollision(gems[i]))
