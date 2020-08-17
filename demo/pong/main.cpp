@@ -7,6 +7,19 @@
 // 	Scoring system
 
 #include "item.h"
+
+class flipped : public animation
+{
+	public:
+	void draw();
+};
+
+void flipped::draw()
+{
+	SDL_RenderCopyEx(ren, image, NULL, &pos, 0, NULL, SDL_FLIP_HORIZONTAL);
+}
+
+
 void saveScreen(const char* file_name, SDL_Renderer* renderer) {
     SDL_Surface* surface = SDL_CreateRGBSurface(0, 2048, 1152, 32, 0, 0, 0, 0);
     SDL_RenderReadPixels(renderer, NULL, surface->format->format, surface->pixels, surface->pitch);
@@ -17,7 +30,7 @@ void saveScreen(const char* file_name, SDL_Renderer* renderer) {
 int main(int argc, char ** arg)
 {
 	itemInit();
-	SDL_Window * win = SDL_CreateWindow("Pong-Like Game", 30, 30, 2048, 1152, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	SDL_Window * win = SDL_CreateWindow("Dragon Pong", 30, 30, 2048, 1152, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	SDL_Renderer * screen = SDL_CreateRenderer(win, -1, 0);
 	SDL_Texture * target = SDL_GetRenderTarget(screen); 
 
@@ -36,7 +49,7 @@ int main(int argc, char ** arg)
 	first.setPos(90, 500);
 	first.loadAnimation("transparent PNG/run/frame-", "1", ".png");
 
-	animation second;
+	flipped second;
 	second.setRenderer(screen);
 	second.setCenter(75, 100, 120);
 	second.setSize(150, 240);
@@ -45,19 +58,19 @@ int main(int argc, char ** arg)
 
 	animation ball;
 	ball.setRenderer(screen);
-	ball.setCenter(25, 25, 12);
+	ball.setCenter(75, 75, 25);
 	ball.setSize(150,150);
 	ball.setPos(980, 550);
 	ball.loadAnimation("PNG/frame-", "1", ".png");
 
 	bool run = true;
 	SDL_SetRenderDrawColor(screen, 30, 180, 20, 255);
-	int fps = 8;
+	int fps = 10;
 	int desiredDelta = 1000 / fps;
-	int speedy = 0;
-	int speedy2 = 0;
-	int ballSpeedX = -14;
+	int speedy = 0, speedy2 = 0, speedx = 0, speedx2 = 0;
+	int ballSpeedX = -18;
 	int ballSpeedY = 15;
+	int playerSpeed = 8;
 	while(run)
 	{
 		int startLoop = SDL_GetTicks();
@@ -73,16 +86,28 @@ int main(int argc, char ** arg)
 					switch(ev.key.keysym.sym)
 					{
 						case SDLK_UP:
-							speedy2 = -12;
+							speedy2 = -playerSpeed;
 							break;
 						case SDLK_DOWN:
-							speedy2 = 12;
+							speedy2 = playerSpeed;
+							break;
+						case SDLK_LEFT:
+							speedx2 = -playerSpeed;
+							break;
+						case SDLK_RIGHT:
+							speedx2 = playerSpeed;
 							break;
 						case SDLK_w:
-							speedy = -12;
+							speedy = -playerSpeed;
 							break;
 						case SDLK_s:
-							speedy = 12;
+							speedy = playerSpeed;
+							break;
+						case SDLK_a:
+							speedx = -playerSpeed;
+							break;
+						case SDLK_d:
+							speedx = playerSpeed;
 							break;
 					}
 
@@ -91,16 +116,21 @@ int main(int argc, char ** arg)
 					switch(ev.key.keysym.sym)
 					{
 						case SDLK_UP:
-							speedy2 = 0;
-							break;
 						case SDLK_DOWN:
 							speedy2 = 0;
 							break;
-						case SDLK_w:
-							speedy = 0;
+						case SDLK_LEFT:
+						case SDLK_RIGHT:
+							speedx2 = 0;
 							break;
+						case SDLK_w:
 						case SDLK_s:
 							speedy = 0;
+							break;
+						case SDLK_a:
+						case SDLK_d:
+							speedx = 0;
+							break;
 					}
 					break;
 				case SDL_WINDOWEVENT:
@@ -112,13 +142,11 @@ int main(int argc, char ** arg)
 						bkg.setSize(x, y);
 						second.setPos(x - (2*second.getPos()->w), second.getPos()->y);
 					}
-
 					break;
-
 			}
 		}
-		first.move(0, speedy);
-		second.move(0, speedy2);
+		first.move(speedx, speedy);
+		second.move(speedx2, speedy2);
 		ball.move(ballSpeedX, ballSpeedY);
 
 		bkg.draw();
@@ -128,8 +156,14 @@ int main(int argc, char ** arg)
 
 		SDL_RenderPresent(screen);
 
-		first.next();
-		second.next();
+		if(speedx || speedy)
+		{
+			first.next();
+		}
+		if(speedx2 || speedy2)
+		{
+			second.next();
+		}
 		ball.next();
 		if(first.getCollision(&ball) || second.getCollision(&ball))
 		{
