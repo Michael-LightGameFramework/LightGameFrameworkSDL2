@@ -11,7 +11,8 @@ Ways to get your code to this repo:
 	Send me a link to your own github and I'll add it to this page
 
 	
-## Pong
+## Dragon Pong
 ![](./demo/pong/ScreenShot.png)
+
 A small demo of how the framework might be used to recreate a classic game.
 

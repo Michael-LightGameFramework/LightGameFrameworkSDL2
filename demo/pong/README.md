@@ -1,4 +1,4 @@
-# Almost Pong
+# Dragon Pong
 ![Image From the game](./ScreenShot.png)
 
 This is a pong/tennis based game in which Free Game Art is slammed together into a quick 2 player game.
