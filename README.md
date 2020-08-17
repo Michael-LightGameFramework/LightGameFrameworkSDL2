@@ -14,5 +14,6 @@ Ways to get your code to this repo:
 ## Dragon Pong
 ![](./demo/pong/ScreenShot.png)
 
-A small demo of how the framework might be used to recreate a classic game.
+A small demo of how the framework might be used to recreate a classic game. Using inheritence you can create child classes with different functionality than the parent class
+
 
