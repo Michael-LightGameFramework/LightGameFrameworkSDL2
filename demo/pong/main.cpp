@@ -63,6 +63,12 @@ int main(int argc, char ** arg)
 	ball.setPos(980, 550);
 	ball.loadAnimation("PNG/frame-", "1", ".png");
 
+	item net;
+	net.setRenderer(screen);
+	net.setPos(980, 200);
+	net.setSize(50, 700);
+	net.loadImage("net.png");
+
 	bool run = true;
 	SDL_SetRenderDrawColor(screen, 30, 180, 20, 255);
 	int fps = 10;
@@ -150,6 +156,7 @@ int main(int argc, char ** arg)
 		ball.move(ballSpeedX, ballSpeedY);
 
 		bkg.draw();
+		net.draw();
 		first.draw();
 		second.draw();
 		ball.draw();

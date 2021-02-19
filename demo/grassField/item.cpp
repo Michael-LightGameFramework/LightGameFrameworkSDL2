@@ -99,6 +99,18 @@ bool item::getCollision(item * other)
 
 }
 
+bool item::isClicked(int x, int y)
+{
+	int dx, dy, rs;
+	dx = pos.x + center.x - x;
+	dy = pos.y + center.y - y;
+	rs = center.r;
+	dx *= dx;
+	dy *= dy;
+	rs *= rs;
+	return (dx + dy < rs);
+}
+
 circle item::getCenter()
 {
 	return center;
@@ -137,9 +149,9 @@ void item::draw()
 	}
 }
 
-SDL_Texture * item::getImage()
+void item::update(int tick)
 {
-	return image;
+	oldTick = tick;
 }
 
 
@@ -193,7 +205,7 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 void animation::next()
 {
 	frameCount ++;
-	image = images[frameCount % (images.size() -1)];
+	image = images[frameCount % (images.size())];
 }
 
 void animation::freeImages()
@@ -208,6 +220,20 @@ void animation::freeImages()
 	}
 }
 
+
+void animation::setFPS(int FPS)
+{
+	desiredDelta = 1000 / FPS;
+}
+
+void animation::update(int tick)
+{
+	if(tick - oldTick > desiredDelta)
+	{
+		next();
+		oldTick = tick;
+	}
+}
 
 
 

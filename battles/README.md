@@ -1,0 +1,3 @@
+# Battles
+In this folder I will place some tests of different battle systems.
+NPC - any npc item can be attacked and ultimately destroyed, some (those that are not inanimate) will hit back. Beware of the chickens... 

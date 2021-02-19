@@ -99,6 +99,18 @@ bool item::getCollision(item * other)
 
 }
 
+bool item::isClicked(int x, int y)
+{
+	int dx, dy, rs;
+	dx = pos.x + center.x - x;
+	dy = pos.y + center.y - y;
+	rs = center.r;
+	dx *= dx;
+	dy *= dy;
+	rs *= rs;
+	return (dx + dy < rs);
+}
+
 circle item::getCenter()
 {
 	return center;
@@ -135,6 +147,11 @@ void item::draw()
 	{
 		std::cout << "Help, image is NULL at draw()\n";
 	}
+}
+
+void item::update(int tick)
+{
+	oldTick = tick;
 }
 
 
@@ -203,6 +220,20 @@ void animation::freeImages()
 	}
 }
 
+
+void animation::setFPS(int FPS)
+{
+	desiredDelta = 1000 / FPS;
+}
+
+void animation::update(int tick)
+{
+	if(tick - oldTick > desiredDelta)
+	{
+		next();
+		oldTick = tick;
+	}
+}
 
 
 

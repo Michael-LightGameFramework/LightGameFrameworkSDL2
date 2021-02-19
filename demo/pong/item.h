@@ -27,16 +27,19 @@ class item
 	SDL_Rect * getPos();
 	void move(int x, int y);
 	bool getCollision(item* other);
+	bool isClicked(int x, int y);
 	circle getCenter();
 	void setCenter(int x, int y, int r);
 	void draw(double angle);
 	void draw();
+	virtual void update(int tick);
 
 	protected:
 	SDL_Renderer * ren;
 	SDL_Texture * image;
 	SDL_Rect pos;
 	circle center;
+	int oldTick;
 
 };
 
@@ -50,10 +53,13 @@ class animation : public item
 			std::string ext);
 	void next();
 	void freeImages();
+	void setFPS(int FPS);
+	virtual void update(int tick);
 
 	protected:
 	int frameCount;
 	std::vector <SDL_Texture *> images;
+	int desiredDelta;
 
 
 };

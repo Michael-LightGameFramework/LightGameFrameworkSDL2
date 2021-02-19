@@ -1,6 +1,6 @@
 # Light Game Framework SDL2
 Code is the result of the Following: https://www.youtube.com/channel/UCaKToiAPfhOgxqy7Wuyjkqw 
-This is the code that is created during the series.
+Each folder is the code that is created during the series.
 
 # Demo Folder
 A folder where I hope you might like to share your own creations with other viewers of the channel. 
