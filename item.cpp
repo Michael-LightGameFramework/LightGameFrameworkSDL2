@@ -160,6 +160,11 @@ void item::draw()
 	}
 }
 
+void item::stamp(item * paper, int x, int y)
+{
+	//	SDL_Texture dest = SDL_CreateTexture(ren, 
+}
+
 void item::update(int tick)
 {
 	oldTick = tick;

@@ -33,6 +33,7 @@ class item
 	circle getCenter();
 	void setCenter(int x, int y, int r);
 	void draw(double angle);
+	void stamp(item * paper, int x, int y);
 	virtual void draw();
 	virtual void update(int tick);
 	SDL_Texture * getImage();
@@ -159,7 +160,7 @@ class npc : public item
 	void playTalk();
 	void hurt(double atk);
 	void heal(double val);
-	void kill(); // play animation of npc... endinga
+	void kill(); // play animation of npc... ending.
 
 	private:
 	double maxHp, hp, atk, def;
@@ -168,6 +169,26 @@ class npc : public item
 	int activeTalk;
 };									
 
+
+
+class grid : public item
+{
+
+	public:
+	grid(SDL_Renderer * rend, int tx, int ty);
+	
+	void fill(item * brush);
+	// use stamp for static background images 
+	void stamp(item * brush, int px, int py);
+	// use set for animations, collision, and interactive tiles
+	void set(item * tile, int tx, int ty);
+	
+	
+
+	private:
+	std::vector <std::vector <item *> > tiles;
+
+};
 
 
 #endif
