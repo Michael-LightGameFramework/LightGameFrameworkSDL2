@@ -7,7 +7,7 @@
 void itemInit()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
-	IMG_Init(IMG_INIT_PNG);
+	IMG_Init(IMG_INIT_PNG || IMG_INIT_JPG);
 	TTF_Init();
 	SDLNet_Init();
 }
@@ -31,6 +31,17 @@ item::item()
 	image = NULL;
 	pos.w = 100;
 	pos.h = 100;
+}
+
+item::item(SDL_Renderer * renderer, std::string loadImg)
+{
+	this->ren = renderer;
+	this->loadImage(loadImg);
+	pos.x = 0;
+	pos.y = 0;
+	SDL_QueryTexture(image, NULL, NULL, &(pos.w), &(pos.h));
+//	pos.w = 100;
+//	pos.h = 100;
 }
 
 item::~item()
@@ -175,6 +186,21 @@ SDL_Texture * item::getImage()
 	return image;
 }
 
+
+void item::preloop()
+{
+
+}
+
+void item::handleEvent(SDL_Event * ev)
+{
+
+}
+
+void item::cleanup()
+{
+
+}
 
 ////////////// CLASS ANIMATION
 
