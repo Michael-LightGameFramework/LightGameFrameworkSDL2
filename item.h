@@ -20,22 +20,34 @@ class item
 {
 	public:
 	item();
+	item(SDL_Renderer * renderer, std::string loadImg);
 	virtual ~item();
 	void setRenderer(SDL_Renderer * renderer);
 	bool loadImage(std::string filename);
-	void freeImage();
+	virtual void freeImage();
 	void setSize(int w, int h);
 	void setPos(int x, int y);
 	SDL_Rect * getPos();
-	void move(int x, int y);
-	bool getCollision(item* other);
-	bool isClicked(int x, int y);
-	circle getCenter();
-	void setCenter(int x, int y, int r);
-	void draw(double angle);
+	virtual void move(int x, int y);
+	virtual bool getCollision(item* other);
+	virtual bool isClicked(int x, int y);
+	virtual circle getCenter();
+	virtual void setCenter(int x, int y, int r);
+	virtual void draw(double angle);
+	virtual void stamp(item * paper, int x, int y);
 	virtual void draw();
 	virtual void update(int tick);
 	SDL_Texture * getImage();
+
+	// some virtual functions for plugins
+	//
+	// take a second to load resources, populate board, etc
+	virtual void preloop();	
+	// sent only on event detected 
+	virtual void handleEvent(SDL_Event * ev);
+	// clean up gracefully before a close. Might be a reset to menu
+	// so it should be a clean exit of the plugin.
+	virtual void cleanup();
 
 	protected:
 	SDL_Renderer * ren;
@@ -159,7 +171,7 @@ class npc : public item
 	void playTalk();
 	void hurt(double atk);
 	void heal(double val);
-	void kill(); // play animation of npc... endinga
+	void kill(); // play animation of npc... ending.
 
 	private:
 	double maxHp, hp, atk, def;
@@ -169,5 +181,27 @@ class npc : public item
 };									
 
 
+
+class grid : public item
+{
+
+	public:
+	grid(SDL_Renderer * rend, int tx, int ty);
+	
+	void fill(item * brush);
+	// use stamp for static background images 
+	void stamp(item * brush, int px, int py);
+	// use set for animations, collision, and interactive tiles
+	void set(item * tile, int tx, int ty);
+	
+	
+
+	private:
+	std::vector <std::vector <item *> > tiles;
+
+};
+
+extern "C" {item* create();}
+extern "C" {void destroy(item * terminate);}
 
 #endif
