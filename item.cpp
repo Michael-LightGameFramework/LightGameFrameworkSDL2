@@ -31,6 +31,7 @@ item::item()
 	image = NULL;
 	pos.w = 100;
 	pos.h = 100;
+	ID ++;
 }
 
 item::item(SDL_Renderer * renderer, std::string loadImg)
@@ -40,6 +41,7 @@ item::item(SDL_Renderer * renderer, std::string loadImg)
 	pos.x = 0;
 	pos.y = 0;
 	SDL_QueryTexture(image, NULL, NULL, &(pos.w), &(pos.h));
+	ID ++;
 //	pos.w = 100;
 //	pos.h = 100;
 }
@@ -192,6 +194,11 @@ void item::preloop()
 
 }
 
+bool item::ready()
+{
+	return true;
+}
+
 void item::handleEvent(SDL_Event * ev)
 {
 
@@ -233,12 +240,12 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 	while(addImage(p + zb + ext) && zb[0] < '9')
 	{
 		zb[leng] ++;
-		for(int i = leng; i > 0; i --)
+		for(int i = leng; i >= 0; i --)
 		{
 			if(zb[i] > '9')
 			{
 				zb[i-1] ++;
-				zb[i] = 0;
+				zb[i] = '0';
 			}
 		}
 	}

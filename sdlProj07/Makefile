@@ -1,2 +1,2 @@
 all:
-	g++ -lSDL2 -lSDL2_image main.cpp item.cpp
+	g++ main.cpp item.cpp -lSDL2 -lSDL2_image 

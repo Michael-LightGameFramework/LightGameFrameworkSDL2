@@ -174,7 +174,7 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 			if(zb[i] > '9')
 			{
 				zb[i-1] ++;
-				zb[i] = 0;
+				zb[i] = '0';
 			}
 		}
 	}

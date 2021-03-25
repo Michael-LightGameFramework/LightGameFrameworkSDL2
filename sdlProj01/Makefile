@@ -1,2 +1,2 @@
 all:
-	g++ -lSDL2 main.cpp item.cpp
+	g++ main.cpp item.cpp -lSDL2
