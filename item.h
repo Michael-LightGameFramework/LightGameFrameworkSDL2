@@ -16,6 +16,7 @@ struct circle
 	int x, y, r;
 };
 
+static int ID;
 class item
 {
 	public:
@@ -43,6 +44,8 @@ class item
 	//
 	// take a second to load resources, populate board, etc
 	virtual void preloop();	
+	// Make sure all threads are ready to run before going to user interaction
+	virtual bool ready();
 	// sent only on event detected 
 	virtual void handleEvent(SDL_Event * ev);
 	// clean up gracefully before a close. Might be a reset to menu
@@ -201,7 +204,7 @@ class grid : public item
 
 };
 
-extern "C" {item* create();}
-extern "C" {void destroy(item * terminate);}
+//extern "C" {item* create();}
+// extern "C" {void destroy(item * terminate);}
 
 #endif
