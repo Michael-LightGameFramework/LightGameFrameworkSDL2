@@ -1,8 +1,7 @@
 # ./plugins/ext.so
-# ./plugins/ext.so
 ./plugins/waves.so
 ./plugins/dual.so
 ./plugins/template.so
-./plugins/ducky.so
+# ./plugins/ducky.so
 ./plugins/fog.so
 ./plugins/pub.so
