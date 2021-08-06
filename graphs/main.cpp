@@ -157,15 +157,20 @@ int main(int argc, char ** argv)
 	bob.refresh();
 
 	TTF_Font * acme = TTF_OpenFont("Acme/Acme-Regular.ttf", 179);
+	TTF_Font * acmes = TTF_OpenFont("Acme/Acme-Regular.ttf", 17);
 	label hi(screen, acme, symbol, 30, 30);
 	hi.setColor(2, 2, 2, 200);
 	hi.buildImage();
 //	hi.setSize(400, 400);
+	label stats(screen, acmes, "0", 0,820);
+	stats.setColor(2,2,2,255);
+	stats.buildImage();
 	bool run = true;
 	SDL_SetRenderDrawColor(screen, 30, 180, 20, 255);
 	SDL_RenderClear(screen);
-	int fps = 4;
+	int fps = 14;
 	int desiredDelta = 1000 / fps;
+	std::string text = "Hello";
 	while(run)
 	{
 		int startLoop = SDL_GetTicks();
@@ -228,12 +233,28 @@ int main(int argc, char ** argv)
 						y = ev.window.data2;
 					}
 					break;
+				case SDL_MOUSEMOTION:
+					stats.setPos(ev.motion.x, 820);
+					std::string txt;
+					int index = (ev.motion.x - bob.getPos()->x) / bob.getBoxWidth();
+					text = bob.getLabel(index);
+					std::stringstream ss;
+					ss << bob.getValue(index);
+					ss >> txt;
+					text += ": ";
+					text += txt;
+					
+					break;
 			}
 		}
+		stats.setText(text);
+		stats.buildImage();
+		bob.refresh();
 		SDL_RenderFillRect(screen, NULL);
 
 	 	bob.draw();
 		hi.draw();
+		stats.draw();
 
 		SDL_RenderPresent(screen);
 

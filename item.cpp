@@ -440,11 +440,23 @@ void barGraph::refresh()
 	{
 		maxVal += 1;
 	}
+
+	int mx, my;
+	SDL_GetMouseState(&mx, &my);
+	mx -= pos.x;
+	
 	for(int i = 0; i < value.size(); i ++)
 	{
 		//box sq(ren, i * width, pos.h, width - 1, value[i]/(maxVal - minVal)*(pos.h + 5));
 		box sq(ren, i * width, zeroY, width - 1, value[i]/(maxVal - minVal)*(pos.h + 5));
-		sq.setColor(rbar, gbar, bbar, abar);
+		if(mx > sq.getPos()->x && mx <= sq.getPos()->x + sq.getPos()->w)
+		{
+			sq.setColor(255, 255, 255, abar);
+		}
+		else
+		{
+			sq.setColor(rbar, gbar, bbar, abar);
+		}
 		sq.draw();
 	}
 	SDL_SetRenderTarget(ren, NULL);
@@ -486,7 +498,29 @@ void barGraph::setBkgImage(std::string ipath)
 }
 std::string barGraph::getLabel(int index)
 {
-	return name[index];
+	if(index < name.size())
+	{
+		return name[index];
+	}
+	return "outOfBounds";
+}
+
+double barGraph::getValue(int index)
+{
+	if(index < value.size())
+	{
+		return value[index];
+	}
+	return 0.0;
+}
+
+int barGraph::getBoxWidth()
+{
+	if(value.size() > 0)
+	{
+		return pos.w/value.size();
+	}
+	return 1;
 }
 
 /*

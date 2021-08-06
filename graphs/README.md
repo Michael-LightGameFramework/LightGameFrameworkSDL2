@@ -9,6 +9,8 @@ To request data for apple, run like this:
 a.out aapl
 
 
+TODO:
+I've got a label to travel over whatever square you highlight. It shows as "date: shares", though the date is not easy to read since it has no hashmarks. It's late tonight, I'll try to remember to fix this...
 
 
 

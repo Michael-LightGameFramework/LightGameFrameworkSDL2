@@ -139,6 +139,8 @@ class barGraph : public item
 	void addValue(std::string name, double val);
 //	box * getBox(int x, int y); // get the box for witch the points collide.
 	std::string getLabel(int index);
+	double getValue(int index);
+	int getBoxWidth();
 	void refresh();
 
 	private:
