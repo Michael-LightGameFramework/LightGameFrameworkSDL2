@@ -135,14 +135,15 @@ int main(int argc, char ** argv)
 				
 				int pos = data[i].find(symbol);
 				int pos2 = data[i].find('|', pos + symbol.length());
-				if(std::string::npos != pos)
+				if(std::string::npos != pos && std::string::npos != pos2)
 				{
-					std::stringstream ss;
-					ss << data[i].substr(pos + symbol.length(), pos2 - pos - symbol.length()) << std::endl;
-					int temp;
-					ss >> temp;
-					
-					count += temp;
+					std::istringstream ss( data[i].substr(pos + symbol.length(), pos2 - pos - symbol.length()));
+				
+					int temp = 0;
+					if(ss >> temp)
+					{
+						count += temp;
+					}
 				}
 			}
 		
