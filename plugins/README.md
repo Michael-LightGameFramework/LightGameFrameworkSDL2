@@ -1,10 +1,8 @@
 # Plugins:
-Check out the item class headers for the most complete API.
 
 ## Getting Started
 
 List.txt contains the list of plugins you wish to include/launch in your program. 
-
 
 Here are some of the key functions;
 
@@ -23,7 +21,7 @@ destroy(item* yours) - also called by main, asks you to destroy your instance of
 
 src/waves.cpp - Shows how to call an animation class from an item pointer that is in fact the child of an animation. (Check out the update function)
 
-src/dual.cpp - Class names are now dissambiguated. Feel free to create any class name that you want. Dual.so has a wave class which loads perfectly fine beside the original wave plugin.
+src/dual.cpp - Class names are now dissambiguated. Feel free to create any class name that you want. Dual.so has a wave class which loads perfectly fine beside the above wave plugin.
 
 src/template.cpp - a quickstart file, copy it and use it as the base to a new plugin.
 

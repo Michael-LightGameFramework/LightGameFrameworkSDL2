@@ -9,7 +9,8 @@ A report of how many blades of grass were on display before exit will be display
 
 
 ## Versions:
-Base - This program is meant to crash before anything is displayed. Use it to determine how many basic items your OS Memory Manager will allow to be created. 
+Base - This program is meant to crash before anything is displayed. Use it to determine how many basic items your OS Memory Manager will allow to be created before utilizing the Flyweight. This is the number you could theoretically display on the screen before you ran out of memory, I won't atempt to guess what the framerate would be like...
+After you've gotten that number, try out FlyWeight as a comparison.
 
 FlyWeight - Utilize resource sharing in order to save memory and then test how many items can/should be displayed before the game is considered unplayable. Set "fps" in flyweight.cpp to change your desired frames per second. 
 This will give a general idea of how many items you can place on a level before a massive overhaul must be considered.

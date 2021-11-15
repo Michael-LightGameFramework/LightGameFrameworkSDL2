@@ -1,7 +1,0 @@
-These are the links to the pong demo image resources.
-I do not own any of the images in the game, they are all free from these sources.
-
-Ninja Girl - https://opengameart.org/content/ninja-girl-free-sprite
-Flappy Dragon - https://opengameart.org/content/flappy-dragon-sprite-sheets
-Crocodile Mascot - https://opengameart.org/content/bevouliin-free-game-sprites-crocodile-mascot-running-and-jumping-boy-game-character
-Battle Background - https://opengameart.org/content/backgrounds-3
