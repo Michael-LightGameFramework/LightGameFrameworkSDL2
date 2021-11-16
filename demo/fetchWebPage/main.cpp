@@ -1,29 +1,24 @@
 #include <item.h>
 #include <string>
+#include <iostream>
 
 int main()
 {
 	itemInit();
-	SDL_Window * win = SDL_CreateWindow("Fetch google html", 10, 10, 800, 500, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	SDL_Renderer * screen = SDL_CreateRenderer(win, -1, 0);
-
-	bool run = true;
-	while(run)
-	{
-		SDL_Event ev;
-		while(SDL_PollEvent(&ev))
-		{
-			if(ev.type == SDL_QUIT)
-			{
-				run = false;
-			}
-		}
-
-		SDL_Delay(80);
-	}
-
-
-	SDL_DestroyWindow(win);
-
+	/*
+	webText cppFetch("cplusplus.com");
+	std::string content = cppFetch.get("/reference/string/string/");
+	*/
+	/**/
+	webText fetch("www.google.com");
+	std::string content = fetch.get("/");
+	/*/
+	 // this defaults to an https page, which seems to be a problem for SDL2_net
+	 // maybe it's my configuration?
+	webText fetch("gutenberg.org");
+	std::string content = fetch.get("/");
+	/**/
+	std::cout << content;
+	std::cout << std::endl;
 	itemQuit();
 }

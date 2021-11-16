@@ -1,14 +1,11 @@
-#include <iostream>
-#include <string>
-#include "item.h"
-
-using namespace std;
+#include <item.h>
 
 int main()
 {
 	itemInit();
 	SDL_Window * win = SDL_CreateWindow("Stretch Image", 10, 10, 300, 300, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	SDL_Renderer * screen = SDL_CreateRenderer(win, -1, 0);
+	
 	item bkg;
 	bkg.setRenderer(screen);
 	bkg.loadImage("zoom.png");
@@ -37,13 +34,11 @@ int main()
 					break;
 			}
 		}
-
 		SDL_RenderClear(screen);
 		bkg.draw();
 		SDL_RenderPresent(screen);
 		SDL_Delay(30);
 	}
-
-	itemQuit();
 	SDL_DestroyWindow(win);
+	itemQuit();
 }
