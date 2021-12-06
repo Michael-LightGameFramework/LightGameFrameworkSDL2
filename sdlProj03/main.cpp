@@ -11,7 +11,7 @@ int main(int argc, char ** arg)
 
 	item bob;
 	bob.setRenderer(screen);
-	bob.loadImage("grass.png");
+	bob.loadImage("../resources/grass.png");
 
 	bool run = true;
 	while(run)

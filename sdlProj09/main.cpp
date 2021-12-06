@@ -12,7 +12,7 @@ int main(int argc, char ** arg)
 
 	item bob;
 	bob.setRenderer(screen);
-	bob.loadImage("Hero-Guy-PNG/_Mode-Sword/02-Run/JK_P_Sword__Run_004.png");
+	bob.loadImage("../resources/Hero-Guy-PNG/_Mode-Sword/02-Run/JK_P_Sword__Run_004.png");
 	bob.setPos(30, 30);
 	bob.setSize(100, 100);
 	bob.setCenter(43, 68, 27);
@@ -23,7 +23,7 @@ int main(int argc, char ** arg)
 	{
 		gems.push_back(new item());
 		gems[i]->setRenderer(screen);
-		gems[i]->loadImage("crystal.png");
+		gems[i]->loadImage("../resources/crystal.png");
 		gems[i]->setPos(rand() % 550, rand() % 450);
 		gems[i]->setSize(50, 50);
 		gems[i]->setCenter(24, 24, 8);
@@ -33,7 +33,7 @@ int main(int argc, char ** arg)
 	box.setRenderer(screen);
 	box.setSize(50, 50);
 	box.setPos(200, 100);
-	std::string path = "heart/";
+	std::string path = "../resources/heart/";
 	std::string count = "0000";
 	std::string ext = ".png";
 	for(int i = 0; i < 80; i ++)

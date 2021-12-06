@@ -1,3 +1,3 @@
 all:
-	g++ -lSDL2 -lSDL2_image main.cpp item.cpp -o Base
-	g++ -lSDL2 -lSDL2_image flyWeight.cpp item.cpp -o Flyweight
+	g++ main.cpp item.cpp -lSDL2 -lSDL2_image -o Base
+	g++ flyWeight.cpp item.cpp -lSDL2 -lSDL2_image -o Flyweight

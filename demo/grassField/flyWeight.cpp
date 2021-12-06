@@ -32,7 +32,7 @@ int main(int argc, char ** arg)
 	SDL_Renderer * screen = SDL_CreateRenderer(win, -1, 0);
 	animation grass1;
 	grass1.setRenderer(screen);
-	grass1.loadAnimation("grass", "0", ".png");
+	grass1.loadAnimation("../../resources/grass", "0", ".png");
 
 	animation bob;
 	bob.setRenderer(screen);

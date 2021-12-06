@@ -11,7 +11,7 @@ int main(int argc, char ** arg)
 
 	item bob;
 	bob.setRenderer(screen);
-	bob.loadImage("Hero-Guy-PNG/_Mode-Sword/02-Run/JK_P_Sword__Run_004.png");
+	bob.loadImage("../resources/Hero-Guy-PNG/_Mode-Sword/02-Run/JK_P_Sword__Run_004.png");
 	bob.setPos(30, 30);
 	bob.setSize(100, 100);
 

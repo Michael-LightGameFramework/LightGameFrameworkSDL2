@@ -1,7 +1,0 @@
-# ./plugins/ext.so
-#./plugins/ext.so
-./plugins/board.so
-./plugins/dice.so
-./plugins/players.so
-./plugins/cards.so
-

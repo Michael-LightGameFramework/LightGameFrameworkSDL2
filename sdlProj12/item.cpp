@@ -15,6 +15,7 @@ void itemQuit()
 
 item::item()
 {
+	oldTick = 0;
 	pos.x = 30;
 	pos.y = 60;
 	image = NULL;
@@ -185,14 +186,13 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 	int leng = zb.length() - 1;
 	while(addImage(p + zb + ext) && zb[0] < '9')
 	{
-		std::cout << (p + zb + ext);
 		zb[leng] ++;
 		for(int i = leng; i > 0; i --)
 		{
 			if(zb[i] > '9')
 			{
 				zb[i-1] ++;
-				zb[i] = 0;
+				zb[i] = '0';
 			}
 		}
 	}

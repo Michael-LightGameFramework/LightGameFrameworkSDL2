@@ -33,6 +33,7 @@ class item
 	void draw(double angle);
 	void draw();
 	virtual void update(int tick);
+	SDL_Texture * getImage();
 
 	protected:
 	SDL_Renderer * ren;

@@ -11,7 +11,7 @@ int main(int argc, char ** arg)
 
 	item bob;
 	bob.setRenderer(screen);
-	bob.loadImage("Earth.png");
+	bob.loadImage("../resources/Earth.png");
 
 	bool run = true;
 	double ang = 0;

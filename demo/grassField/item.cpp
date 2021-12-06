@@ -155,6 +155,12 @@ void item::update(int tick)
 }
 
 
+SDL_Texture * item::getImage()
+{
+	return image;
+}
+
+
 ////////////// CLASS ANIMATION
 
 animation::animation()

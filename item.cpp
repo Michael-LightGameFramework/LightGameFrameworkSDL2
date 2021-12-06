@@ -573,7 +573,7 @@ std::string webText::get(std::string linkPath)
 			// recv causes blocking if timeout not closed
 			if(SDLNet_CheckSockets(sSet, 5000) > 0)
 			{
-				count = SDLNet_TCP_Recv(client, text, 1023);
+				count = SDLNet_TCP_Recv(client, text, 1024);
 				if(count <= 0)
 				{
 					std::cout << "Possible error detected...\n";

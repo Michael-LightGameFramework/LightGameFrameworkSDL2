@@ -24,7 +24,7 @@ int main(int argc, char ** arg)
 	{
 		field.push_back(new animation);
 		field[i]->setRenderer(screen);
-		field[i]->loadAnimation("grass", "0", ".png");
+		field[i]->loadAnimation("../../resources/grass", "0", ".png");
 		field[i]->setSize(25, 50);
 		field[i]->setPos(rand() % W, rand() % H);
 		std::cout << "Allocated " << i << " blades of grass\n";

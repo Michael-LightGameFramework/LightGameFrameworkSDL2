@@ -8,7 +8,7 @@ int main()
 	
 	item bkg;
 	bkg.setRenderer(screen);
-	bkg.loadImage("zoom.png");
+	bkg.loadImage("../../resources/zoom.png");
 	bkg.setSize(300, 300);
 	bkg.setPos(0,0);
 
