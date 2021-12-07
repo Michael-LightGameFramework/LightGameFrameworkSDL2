@@ -21,3 +21,4 @@ Ways to get your code to this repo:
 A small demo of how the framework might be used to recreate a classic game. Using inheritence you can create child classes with different functionality than the parent class
 
 
+I'm trying to reduce the download size, hope it worked.
