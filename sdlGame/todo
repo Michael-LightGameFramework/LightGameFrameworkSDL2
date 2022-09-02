@@ -1,0 +1,14 @@
+I'm moving things from main into a level class so that whole levels
+can be swappable. 
+(for example, hitting the earth launches the overworld level)
+
+
+
+--- Overworld -----
+If you play cupheads, you'll see that there is an overworld board that the player traverses, and they can launch minigames as they find them on this board.
+The overworld is basically safe. There might be hidden coins, and that merchant looks a bit shady, but nothing is going to attack the player here. 
+
+---- Minigames
+The minigames are fast. They are difficult. They feature the players much larger than in the overworld, which gives the overworld some feeling of being huge itself, even though the player is smaller there.
+The minigames follow some patterns that the player can memorize in order to complete the level. The weapons that the player chooses before the minigame will have large effects on the result of the game... 
+So, the overworld is 

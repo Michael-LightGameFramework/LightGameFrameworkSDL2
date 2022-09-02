@@ -14,11 +14,13 @@ int main(int argc, char ** arg)
 	bkg.setSize(windowSize.w, windowSize.h);
 	bkg.loadImage("bkg.png");
 
+	group assets(screen);
+
+
 	label out[] = {label(screen), label(screen), label(screen)};
 	out[0].setText("Hit w to close the window");
 	out[1].setText("or space to pause");
 	out[2].setText("Up button plays a \'hah\' sound");
-
 	out[1].move(0, out[1].getPos()->h);
 	out[2].move(0, out[1].getPos()->h * 2);
 

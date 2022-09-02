@@ -1,15 +1,16 @@
 #ifndef IMAGESANDITEMS
 #define IMAGESANDITEMS
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include <vector>
 
 void itemInit();
 void itemQuit();
+
+enum Direction {Up, Down, Left, Right};
 
 struct circle
 {
@@ -24,31 +25,30 @@ class item
 	virtual ~item();
 	void setRenderer(SDL_Renderer * renderer);
 	bool loadImage(std::string filename);
-	SDL_Texture * getImage();
-	void setImage(SDL_Texture * img);
 	void freeImage();
-	void setSize(int w, int h);
+	virtual void setSize(int w, int h);
 	void setPos(int x, int y);
 	SDL_Rect * getPos();
-	void move(int x, int y);
+	virtual void move(int x, int y);
 	bool getCollision(item* other);
-	bool isClicked(int x, int y);
+	virtual bool isClicked(int x, int y);
 	circle getCenter();
 	void setCenter(int x, int y, int r);
-	void draw(double angle);
-	void drawHFlip();
-	void draw();
+	virtual void draw(double angle);
+	virtual void drawHFlip();
+	virtual void draw();
 	virtual void update(int tick);
-	std::string toString();
+	SDL_Texture * getImage();
+	void setImage(SDL_Texture * img);
 
 	protected:
 	SDL_Renderer * ren;
 	SDL_Texture * image;
-	bool owned;
 	SDL_Rect pos;
 	circle center;
 	int oldTick;
-	std::string type;
+	bool owned; // do we need to dealocate image?
+
 };
 
 class animation : public item
@@ -73,54 +73,16 @@ class animation : public item
 
 };
 
-// text output
-class label : public item
-{
-	public:
-	label();
-	label(SDL_Renderer * screen);
-	void render();
-	void update(int tick);
-	void setText(std::string newText);
-
-	void (*textChanged)(item *);
-
-	public:
-	TTF_Font * font;
-	std::string text;
-	std::string oldText;
-	SDL_Color color;
-};
-
-
-class tilemap : public item
-{
-	public:
-	tilemap();
-	tilemap(SDL_Renderer * screen);
-	item * get(int index);
-	// tilemap image, tile w, tile h
-	void addImage(std::string filePath, int w, int h);
-	void clear();
-	// get the last tile in the set.
-	item * last(); 
-
-	public:
-	std::vector <item *> tiles;
-
-
-};
 
 
 class group : public item
 {
 	public:
-	group();
-	group(SDL_Renderer * screen);
-	void draw();
-	void addRef(item * other);
-	void move(int x, int y);
-	void update(int tick);
+	virtual void draw();
+	virtual void draw(double angle);
+	virtual void addRef(item * other);
+	virtual void move(int x, int y);
+	std::vector <item *> getBoundedItems(SDL_Rect bounds);
 
 	public:
 	std::vector <item *> items;
@@ -131,9 +93,13 @@ class group : public item
 class board : public item
 {
 	public:
+	board();
 	board(SDL_Renderer * rend);
-	void draw();
+	virtual void init();
+	virtual void draw();
 	void move(int x, int y);
+	virtual void handleEvent(SDL_Event * ev);
+
 
 	public:
 	item Player;
@@ -141,6 +107,8 @@ class board : public item
 	group drawn;
 	group click;
 	group collide;
+	// use to link boards, use Direction enum;
+	board *egress;
 
 };
 

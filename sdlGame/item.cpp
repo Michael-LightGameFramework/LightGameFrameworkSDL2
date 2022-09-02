@@ -1,25 +1,19 @@
 #include "item.h"
 #include <iostream>
 
-TTF_Font * DefaultFont;
 void itemInit()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
-	TTF_Init();
 	IMG_Init(IMG_INIT_PNG);
 	Mix_Init(MIX_INIT_MP3 | MIX_INIT_OPUS | MIX_INIT_OGG);
-
-	DefaultFont = TTF_OpenFont("res/fonts/roboto.ttf", 40);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 6, 4096);
 }
 
 void itemQuit()
 {
-	TTF_CloseFont(DefaultFont);
 	Mix_CloseAudio();
 	Mix_Quit();
 	IMG_Quit();
-	TTF_Init();
 	SDL_Quit();
 }
 
@@ -32,7 +26,6 @@ item::item()
 	pos.w = 100;
 	pos.h = 100;
 	owned = false;
-	type = "item";
 }
 
 item::item(SDL_Renderer * screen) : item()
@@ -42,12 +35,14 @@ item::item(SDL_Renderer * screen) : item()
 
 item::~item()
 {
-	if(image != NULL && owned)
+	if(owned && image)
 	{
 		SDL_DestroyTexture(image);
 		image = NULL;
 	}
+
 }
+
 
 bool item::loadImage(std::string filename)
 {
@@ -64,27 +59,16 @@ bool item::loadImage(std::string filename)
 	}
 	return false;
 }
-
-SDL_Texture * item::getImage()
-{
-	return image;
-}
-
-void item::setImage(SDL_Texture * img)
-{
-	image = img;
-}
-
 void item::freeImage()
 {
-	// if this is specifically called, let's
-	// not check against owned?
-	// likely the cause of error if you use this incorrectly,
-	// but the training wheels are off here...
 	if(image != NULL)
 	{
 		SDL_DestroyTexture(image);
 		image = NULL;
+	}
+	if(!owned)
+	{
+		SDL_Log("Deleted a texture not owned by item!\n");
 	}
 }
 
@@ -170,7 +154,6 @@ void item::draw(double angle)
 	}
 
 }
-
 void item::drawHFlip()
 {
 	if(image != NULL)
@@ -181,7 +164,6 @@ void item::drawHFlip()
 	{
 		std::cout << "Help, image is NULL at draw()\n";
 	}
-
 }
 
 void item::draw()
@@ -201,25 +183,27 @@ void item::update(int tick)
 	oldTick = tick;
 }
 
-std::string item::toString()
+SDL_Texture * item::getImage()
 {
-	// what info do we need to reload this object?
-	return "<item "; 
+	return image;
 }
 
+void item::setImage(SDL_Texture * img)
+{
+	image = img;
+}
 
 ////////////// CLASS ANIMATION
 
 animation::animation()
 {
-	type = "animation";
+
 }
 
-animation::animation(SDL_Renderer * screen) : animation()
+animation::animation(SDL_Renderer * screen)
 {
 	ren = screen;
 }
-
 
 animation::~animation()
 {
@@ -273,7 +257,7 @@ void animation::next()
 	else
 	{
 		frameCount ++;
-		image = images[frameCount % (images.size() -1)];
+		image = images[frameCount % (images.size())];
 	}
 }
 
@@ -306,189 +290,68 @@ void animation::update(int tick)
 }
 
 
-
-///////////////////////////
-// TILEMAP
-//////////////////////////
-
-tilemap::tilemap(SDL_Renderer * screen) : tilemap()
-{
-	ren = screen;
-}
-tilemap::tilemap() : item()
-{
-	type = "tilemap";
-}
-
-item * tilemap::get(int index)
-{
-	if(index < tiles.size() && index >= 0)
-	{
-		return tiles[index];
-	}
-	else
-	{
-		SDL_Log("Tried to access beyond tilemap index range\n");
-		SDL_Log("Tiles range from 0 to %ld", tiles.size());
-		return NULL;
-	}
-}
-
-item * tilemap::last()
-{
-	return tiles[tiles.size() - 1];
-}
-
-void tilemap::addImage(std::string filePath, int w, int h)
-{
-	if(ren)
-	{
-		SDL_Surface * temp = IMG_Load(filePath.c_str());
-		if(temp)
-		{
-			SDL_Texture * src = SDL_CreateTextureFromSurface(ren, temp);
-			SDL_Texture * orig = SDL_GetRenderTarget(ren);
-			int wbound = temp->w;
-			int hbound = temp->h;
-			SDL_FreeSurface(temp);
-			for(int i = 0; i < hbound - h; i += h)
-			{
-				for(int k = 0; k < wbound; k += w)
-				{
-					tiles.push_back(new item(ren));
-					last()->setSize(w, h);
-					SDL_Texture * dest = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
-					SDL_SetTextureBlendMode(dest, SDL_BLENDMODE_BLEND);
-					SDL_SetRenderTarget(ren, dest);
-					SDL_Rect subRect{k, i, w, h};
-					SDL_RenderCopy(ren, src, &subRect, NULL);
-					last()->setImage(dest);
-					SDL_SetRenderTarget(ren, orig);
-				}
-			}
-			SDL_DestroyTexture(src);
-		}
-	}
-	else
-	{
-		SDL_Log("Couldn't load %s", filePath.c_str());
-	}
-}
-
-
-///////////////////////////
-// LABEL
-///////////////////////////
-
-label::label()
-{
-	type = "label";
-	font = DefaultFont;
-	textChanged = NULL;
-	color = {35, 45, 55, 255};
-}
-
-label::label(SDL_Renderer * screen) : label()
-{
-	ren = screen;
-}
-
-void label::render()
-{
-	if(image && owned)
-	{
-		SDL_DestroyTexture(image);
-	}
-	if(font && !(text.empty()))
-	{
-		SDL_Surface * temp = TTF_RenderText_Solid(font, text.c_str(), color);
-		if(temp)
-		{
-			image = SDL_CreateTextureFromSurface(ren, temp);
-			pos.w = temp->w;
-			pos.h = temp->h;
-			SDL_FreeSurface(temp);
-		}
-	}
-}
-
-void label::setText(std::string textStr)
-{
-	text = textStr;
-	render();
-	if(textChanged)
-	{
-		textChanged(this);
-	}
-}
-
-// this function should only be used
-// if you are worried about public access
-// to the text string. 
-// It can be skipped if you choose to use setText()
-// every time.
-void label::update(int tick)
-{
-	if(oldText != text)
-	{
-		oldText = text;
-		render();
-		if(textChanged)
-		{
-			textChanged(this);
-		}
-	}
-
-};
-
-
-
-
 ////////////////////////////
 // GROUP
 ////////////////////////////
-group::group()
-{
-	type = "group";
-}
-group::group(SDL_Renderer * screen): group()
-{
-	ren = screen;
-}
 
 void group::draw()
 {
-	int len = items.size();
-	for(int i = 0; i < len; i ++)
+	for(int i = 0; i < items.size(); i ++)
 	{
 		items[i]->draw();
 	}
 }
 
+void group::draw(double angle)
+{
+	for(int i = 0; i < items.size(); i ++)
+	{
+		items[i]->draw(angle);
+	}
+}
+
 void group::addRef(item * other)
 {
-	items.push_back(other);
+	if(other)
+	{
+		items.push_back(other);
+	}
+	else
+	{
+		SDL_Log("Tried to add NULL item pointer to group\n");
+	}
 }
 
 void group::move(int x, int y)
 {
-	int len = items.size();
-	for(int i = 0; i < len; i ++)
+	for(int i = 0; i < items.size(); i ++)
 	{
 		items[i]->move(x, y);
 	}
 }
 
-void group::update(int tick)
+std::vector <item*> group::getBoundedItems(SDL_Rect bounds)
 {
+	std::vector <item *> ret;
 	int len = items.size();
-	for(int i = 0; i < len; i ++);
+	for(int i = 0; i < len; i ++)
+	{
+		if(SDL_HasIntersection(&bounds, items[i]->getPos()))
+		{
+			ret.push_back(items[i]);
+		}
+	}
+	return ret;
 }
 
 
 ////////////////////////////////////////
 // Board Class
 ////////////////////////////////////
+
+board::board()
+{
+}
 
 board::board(SDL_Renderer * rend)
 {
@@ -498,7 +361,6 @@ board::board(SDL_Renderer * rend)
 	Player.setPos(w/2 - 32, h/2 - 32);
 	bkg.setSize(w, h);
 	bkg.setPos(0, 0);
-	type = "board";
 }
 
 
@@ -516,6 +378,15 @@ void board::move(int x, int y)
 	collide.move(-x, -y);
 }
 
+void board::handleEvent(SDL_Event * ev)
+{
+
+}
+
+void board::init()
+{
+
+}
 
 
 
