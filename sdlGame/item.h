@@ -6,6 +6,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 void itemInit();
 void itemQuit();
@@ -95,6 +96,7 @@ class board : public item
 	public:
 	board();
 	board(SDL_Renderer * rend);
+	// populate board with tiles, set to default state
 	virtual void init();
 	virtual void draw();
 	void move(int x, int y);
@@ -107,8 +109,7 @@ class board : public item
 	group drawn;
 	group click;
 	group collide;
-	// use to link boards, use Direction enum;
-	board *egress;
+
 
 };
 

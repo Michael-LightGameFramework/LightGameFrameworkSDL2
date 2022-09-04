@@ -237,6 +237,7 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 			}
 		}
 	}
+	std::cout << "Animation loaded " << images.size() << std::endl;
 	if(!(images.empty()))
 	{
 		return true;
@@ -257,20 +258,33 @@ void animation::next()
 	else
 	{
 		frameCount ++;
-		image = images[frameCount % (images.size())];
+		int index = frameCount % images.size();
+		if(images[index])
+		{
+			image = images[index];
+		}
+		else
+		{
+			SDL_Log("An animation image is loading as NULL!");
+		}
 	}
 }
 
 void animation::freeImages()
 {
-	for(int i = 0; i < images.size(); i ++)
+	if(owned)
 	{
-		if(images[i] != NULL)
+		for(int i = 0; i < images.size(); i ++)
 		{
-			SDL_Texture * del = images[i];
-			SDL_DestroyTexture(del);
-			images[i] = NULL;
+			if(images[i] != NULL)
+			{
+				SDL_Texture * del = images[i];
+				SDL_DestroyTexture(del);
+				images[i] = NULL;
+			}
 		}
+		image = NULL;
+		owned = false;
 	}
 }
 

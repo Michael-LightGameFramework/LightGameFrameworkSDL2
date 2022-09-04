@@ -28,7 +28,9 @@ class spawner: public group
 	public:
 	spawner();
 	spawner(SDL_Renderer * screen);
+	~spawner();
 	void spawn();
+	void drawSelf();
 	void setSize(int w, int h);
 	void update(int tick);
 	void remove(int index);
@@ -46,6 +48,7 @@ class spawner: public group
 	SDL_Rect bounds;
 	int engine;
 	int speedX;
+	int speedY;
 	SDL_Rect particleSize;
 	bool spawning;
 	int gravidity;

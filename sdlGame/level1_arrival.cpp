@@ -1,4 +1,5 @@
 #include <level1_arrival.h>
+#include <iostream>
 
 
 
@@ -90,10 +91,11 @@ void player::update(int tick)
         {
                 pos.y = 1080;
         }
-        if(pos.x < -20)
+        if(pos.x < -22)
         {
                 pos.x = -20;
                 speedX *= -.8;
+		faceLeft = false;
         }
         if(pos.x > 1880)
         {
@@ -134,13 +136,16 @@ void player::draw()
 spawner::spawner()
 {
         spawning = false;
-        ren = NULL;
         bounds = {-200, -100, 2400, 1400};
-        moveXFunc = doNoth;
+        moveXFunc = NULL;
         moveYFunc = bigSine;
+	speedX = -1;
+	speedY = 0;
         base = NULL;
         everyNMilisec = 400;
         particleSize = {pos.x, pos.y, 100, 100};
+	oldTick = 0;
+	gravidity = -1;
 }
 
 spawner::spawner(SDL_Renderer * screen) : spawner()
@@ -148,11 +153,44 @@ spawner::spawner(SDL_Renderer * screen) : spawner()
         ren = screen;
 }
 
+spawner::~spawner()
+{
+	clear();
+}
+
+void spawner::spawn()
+{
+	if(gravidity)
+	{
+		addRef(new item);
+		items[items.size() -1]->setRenderer(ren);
+		items[items.size() -1]->setImage(base->getImage());
+		items[items.size() -1]->setPos(pos.x, pos.y);
+		items[items.size() -1]->setSize(particleSize.w, particleSize.h);
+		items[items.size() -1]->setCenter(center.x, center.y, center.r);
+		gravidity --;
+		if(gravidity == 0 && onEmpty)
+		{
+			onEmpty(this);
+		}
+	}
+}
+
+void spawner::drawSelf()
+{
+	if(base)
+	{
+		setImage(base->getImage());
+		item::draw();
+	}
+}
+
 void spawner::setSize(int w, int h)
 {
         particleSize.w = w;
         particleSize.h = h;
 }
+
 
 
 
@@ -182,9 +220,16 @@ void spawner::clear()
 
 void spawner::update(int tick)
 {
-        pos.y = moveYFunc(engine);
         if(base && spawning)
         {
+		if(moveYFunc)
+		{
+	        	pos.y = moveYFunc(engine);
+		}
+		if(moveXFunc)
+		{
+			pos.x = moveXFunc(engine);
+		}
                 if(oldTick == 0)
                 {
                         oldTick = tick;
@@ -193,31 +238,24 @@ void spawner::update(int tick)
                 if(tick - oldTick > everyNMilisec)
                 {
                         oldTick = tick;
+			engine ++;
                         if(gravidity)
                         {
-                                addRef(new item(ren));
-                                items[items.size() -1]->setImage(base->getImage());
-                                items[items.size() -1]->setPos(pos.x, pos.y);
-                                items[items.size() -1]->setSize(particleSize.w, particleSize.h);
-                                items[items.size() -1]->setCenter(center.x, center.y, center.r);
-                                engine ++;
-                                gravidity --;
-                                if(gravidity == 0 && onEmpty)
-                                {
-                                        onEmpty(this);
-                                }
-
+				spawn();
                         }
                 }
                 for(int i = 0; i < items.size(); i ++)
                 {
-                        items[i]->move(speedX, 0);
+                        items[i]->move(speedX, speedY);
                         if(!(SDL_HasIntersection(&bounds, items[i]->getPos())))
                         {
                                 remove(i);
                                 i --;
                         }
-                        //items[i]->setImage(base->getImage());
+                        if(!base->getImage())
+			{
+				std::cout << "NULL IMAGE IN BASE ITEM!\n";
+			}
                 }
         }
 }
@@ -291,16 +329,16 @@ level1::level1(SDL_Renderer * screen) : board(screen)
 
 	star = new animation(screen);
 	star->loadAnimation("res/images/star", "1", ".png");
+	star->setPos(50, 50);
 
 	starSpawn.setRenderer(screen);
 	starSpawn.base = star;
 	starSpawn.setPos(windowSize.w + 200, 12);
 	starSpawn.setSize(22, 10);
 	starSpawn.speedX = -3;
-	starSpawn.bounds = {-100, -100, windowSize.w + 400, windowSize.h += 400};
+	starSpawn.bounds = {-100, -100, windowSize.w + 500, windowSize.h += 400};
 	starSpawn.everyNMilisec = 500;
 	starSpawn.moveYFunc = random;
-	starSpawn.moveXFunc = doNoth;
 	starSpawn.spawning = true;
 	starSpawn.fastForward(15000);
 
@@ -329,8 +367,9 @@ void level1::init()
 	refugeeSpawn.clear();
 	refugeeSpawn.gravidity = maxGravidity;
 
-
 	ship.setPos(30, windowSize.h/2 - 150);
+	ship.speedX = 0.0f;
+	ship.speedY = 0.0f;
 }
 
 void level1::handleEvent(SDL_Event * ev)
@@ -430,5 +469,6 @@ void level1::draw()
 	refugeeSpawn.draw();
 	ship.draw();
 	goal.draw();
+	starSpawn.drawSelf();
 
 }
