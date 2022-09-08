@@ -221,6 +221,16 @@ bool animation::addImage(std::string filePath)
 	return false;
 }
 
+bool animation::addImage(item * other)
+{
+	if(other->getImage())
+	{
+		images.push_back(other->getImage());
+		return true;
+	}
+	return false;
+}
+
 
 bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 {
@@ -237,7 +247,6 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 			}
 		}
 	}
-	std::cout << "Animation loaded " << images.size() << std::endl;
 	if(!(images.empty()))
 	{
 		return true;
@@ -305,6 +314,85 @@ void animation::update(int tick)
 
 
 ////////////////////////////
+// TILEMAP
+//////////////////////////
+
+tilemap::tilemap(SDL_Renderer * screen) : tilemap()
+{
+	ren = screen;
+}
+tilemap::tilemap() : item ()
+{
+	
+}
+
+item * tilemap::get(int index)
+{
+	if(index < tiles.size() && index >= 0)
+	{
+		return tiles[index];
+	}
+	else
+	{
+		SDL_Log("Tried to access beyond tilemap index (%ld)\n", index);
+		SDL_Log("Tiles range from 0 to %ld", tiles.size() - 1);
+	}
+	return NULL;
+}
+
+item * tilemap::last()
+{
+	if(tiles.empty())
+	{
+		std::cout << "Called \"last()\" on empty tilemap" << std::endl;
+		return NULL;
+	}
+	return tiles[tiles.size() - 1];
+}
+
+void tilemap::addImage(std::string filePath, int w, int h)
+{
+	if(ren)
+	{
+		SDL_Surface * temp = IMG_Load(filePath.c_str());
+		if(temp)
+		{
+			SDL_Texture * src = SDL_CreateTextureFromSurface(ren, temp);
+			SDL_Texture * orig = SDL_GetRenderTarget(ren);
+			int wBound = temp->w;
+			int hBound = temp->h;
+			SDL_FreeSurface(temp);
+			for(int i = 0; i < hBound; i += h)
+			{
+				for(int k = 0; k < wBound; k += w)
+				{
+					tiles.push_back(new item(ren));
+					last()->setSize(w, h);
+					SDL_Texture * dest = SDL_CreateTexture(ren, 
+						SDL_PIXELFORMAT_RGBA8888, 
+						SDL_TEXTUREACCESS_TARGET, w, h);
+					SDL_SetTextureBlendMode(dest, SDL_BLENDMODE_BLEND);
+					SDL_SetRenderTarget(ren, dest);
+					SDL_Rect subRect{k, i, w, h};
+					SDL_RenderCopy(ren, src, &subRect, NULL);
+					last()->setImage(dest);
+					SDL_SetRenderTarget(ren, orig);
+				}
+			}
+			SDL_DestroyTexture(src);
+
+		}
+
+
+	}
+	else
+	{
+		std::cout << "Cannot add image to tilemap while renderer is NULL: " << filePath << std::endl;
+	}
+}
+
+
+////////////////////////////
 // GROUP
 ////////////////////////////
 
@@ -358,6 +446,15 @@ std::vector <item*> group::getBoundedItems(SDL_Rect bounds)
 	return ret;
 }
 
+item * group::last()
+{
+	if(items.size() > 0)
+	{
+		return items[items.size() - 1];
+	}
+	return NULL;
+}
+
 
 ////////////////////////////////////////
 // Board Class
@@ -365,31 +462,30 @@ std::vector <item*> group::getBoundedItems(SDL_Rect bounds)
 
 board::board()
 {
+	name = "board";
+	request = "";
+	fin = false;
+	Player = NULL;
+	bkg = NULL;
+	pause = false;
 }
 
-board::board(SDL_Renderer * rend)
+board::board(SDL_Renderer * rend) : board()
 {
 	ren = rend;
-	int w, h;
-	SDL_GetRendererOutputSize(ren, &w, &h);
-	Player.setPos(w/2 - 32, h/2 - 32);
-	bkg.setSize(w, h);
-	bkg.setPos(0, 0);
 }
 
 
 void board::draw()
 {
-	bkg.draw();
+	bkg->draw();
 	drawn.draw();
-	Player.draw();
+	Player->draw();
 }
 
 void board::move(int x, int y)
 {
 	drawn.move(-x, -y);
-	click.move(-x, -y);
-	collide.move(-x, -y);
 }
 
 void board::handleEvent(SDL_Event * ev)
@@ -399,9 +495,17 @@ void board::handleEvent(SDL_Event * ev)
 
 void board::init()
 {
-
+	fin = false;
+	if(ren == NULL)
+	{
+		std::cout << "Called init on board with NULL renderer.\n";
+	}
 }
 
+void board::togglePause()
+{
+	pause = !pause;
+}
 
 
 

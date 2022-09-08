@@ -66,7 +66,7 @@ class level1 : public board
 	void handleEvent(SDL_Event * ev);
 	void update(int tick);
 	void draw();
-
+	void togglePause();
 	void (*giveGoal)(item *);
 
 	// onDeath();
@@ -81,7 +81,7 @@ class level1 : public board
 	int maxGravidity;
 	SDL_Rect windowSize;
 
-	item bkg;
+	item *bkg;
 	item goal;
 	animation * refugee;
 	spawner refugeeSpawn;

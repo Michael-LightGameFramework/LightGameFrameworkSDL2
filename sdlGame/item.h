@@ -13,6 +13,8 @@ void itemQuit();
 
 enum Direction {Up, Down, Left, Right};
 
+std::string absPath();
+
 struct circle
 {
 	int x, y, r;
@@ -59,6 +61,7 @@ class animation : public item
 	animation(SDL_Renderer * screen);
 	virtual ~animation();
 	bool addImage(std::string filePath);
+	bool addImage(item * other);
 	bool loadAnimation(std::string pref, std::string zbuf, \
 			std::string ext);
 	void next();
@@ -74,6 +77,23 @@ class animation : public item
 
 };
 
+class tilemap : public item
+{
+        public:
+        tilemap();
+        tilemap(SDL_Renderer * screen);
+        item * get(int index);
+        // tilemap image, tile w, tile h
+        void addImage(std::string filePath, int w, int h);
+        void clear();
+        // get the last tile in the set.
+        item * last();
+
+        public:
+        std::vector <item *> tiles;
+
+
+};
 
 
 class group : public item
@@ -84,6 +104,7 @@ class group : public item
 	virtual void addRef(item * other);
 	virtual void move(int x, int y);
 	std::vector <item *> getBoundedItems(SDL_Rect bounds);
+	item * last();
 
 	public:
 	std::vector <item *> items;
@@ -101,19 +122,31 @@ class board : public item
 	virtual void draw();
 	void move(int x, int y);
 	virtual void handleEvent(SDL_Event * ev);
+	virtual void togglePause();
 
 
 	public:
-	item Player;
-	item bkg;
+	std::string name;
+	std::string request;
+	// set fin = true when board is done running, also set request to new board, or leave Null to get default
+	bool fin;
+	bool pause;
+	item *Player;
+	animation *bkg;
 	group drawn;
 	group click;
 	group collide;
 
+	bool left, right, up, down; // direction keys, handleEvent
 
 };
 
 
+extern "C"
+{
+	extern item * spawn(SDL_Renderer * screen);
+	extern void destroy(item * key);
+}
 
 
 #endif

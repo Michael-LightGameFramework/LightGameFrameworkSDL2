@@ -1,6 +1,15 @@
 #include <level1_arrival.h>
 #include <iostream>
 
+item * spawn(SDL_Renderer * screen)
+{
+	return new level1(screen);
+}
+
+void destroy(item * key)
+{
+	delete (level1 *) key;
+}
 
 
 bool givePlanet = false;
@@ -64,19 +73,19 @@ void player::accelerate(bool left, bool right, bool up, bool down)
                 speedX += accelX;
         }
 
-        if(speedX > 0.25f)
+	if(speedX > -1.0f && speedX < 1.0f)
+	{
+		angle = (5.0 * speedY)/0.43f;
+	}
+	else if(speedX >= 1.0f)
         {
-                faceLeft = false;
+		faceLeft = false;
                 angle = (5.0 *speedY)/speedX;
         }
-        else if(speedX < -0.25f)
+        else if(speedX <= 1.0f)
         {
                 faceLeft = true;
                 angle = (5.0 *speedY)/speedX;
-        }
-        else
-        {
-                angle = (5*speedY)/0.43f;
         }
 }
 
@@ -293,8 +302,11 @@ item * spawner::checkCollision(item * other)
 // LEVEL1
 //////////////////////////
 
-level1::level1(SDL_Renderer * screen) : board(screen)
+level1::level1(SDL_Renderer * screen): board(screen)
 {
+	name = "level1";
+	ren = screen;
+
 	SDL_GetRendererOutputSize(ren, &windowSize.w, &windowSize.h);
 	up = false;
 	down = false;
@@ -305,10 +317,10 @@ level1::level1(SDL_Renderer * screen) : board(screen)
 	maxGravidity = 220;
 	giveGoal = activatePlanet;
 
-	bkg.setRenderer(screen);
-	bkg.loadImage("res/images/bkg.png");
-	bkg.setSize(windowSize.w, windowSize.h);
-	bkg.setPos(0,0);
+	bkg = new item(screen);
+	bkg->loadImage("res/images/bkg.png");
+	bkg->setSize(windowSize.w, windowSize.h);
+	bkg->setPos(0,0);
 
 	goal.setRenderer(screen);
 	goal.loadImage("res/images/earth.png");
@@ -359,8 +371,12 @@ level1::~level1()
 // Set the variables that the game is going to reset on game restart;
 void level1::init()
 {
+	board::init();
 	pause = true;
-	maxGravidity -= 12;
+	if(maxGravidity > 34)
+	{
+		maxGravidity -= 12;
+	}
 	givePlanet = false;
 	goal.setPos(windowSize.w + 320, windowSize.h / 3);
 
@@ -392,7 +408,7 @@ void level1::handleEvent(SDL_Event * ev)
 					left = true;
 					break;
 				case SDLK_SPACE:
-					pause = false;
+					pause = !pause;
 					refugeeSpawn.spawning = true;
 					break;
 			}
@@ -446,6 +462,8 @@ void level1::update(int tick)
 	if(ship.getCollision(&goal))
 	{
 		// win state, activate next level!
+		fin = true;
+		request = "overworld";
 	}
 	// box check
 	item * crash = refugeeSpawn.checkCollision(&ship);
@@ -464,11 +482,18 @@ void level1::update(int tick)
 
 void level1::draw()
 {
-	bkg.draw();
+	bkg->draw();
 	starSpawn.draw();
 	refugeeSpawn.draw();
 	ship.draw();
 	goal.draw();
 	starSpawn.drawSelf();
 
+}
+
+
+void level1::togglePause()
+{
+	pause = !pause;
+	refugeeSpawn.spawning = pause;
 }
