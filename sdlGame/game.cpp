@@ -40,8 +40,8 @@ void game::addLevel(std::string filePath)
 
 void game::init()
 {
-	levels["start"] = levels["level1"];
-	// levels["start"] = levels["overworld"];
+	//levels["start"] = levels["level1"];
+	 levels["start"] = levels["overworld"];
 	levels["default"] = levels["overworld"];
 	levels[""] = levels["overworld"];
 	currentLvl = levels["start"];

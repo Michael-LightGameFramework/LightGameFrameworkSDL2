@@ -4,6 +4,17 @@
 #include <item.h>
 #include <unordered_map>
 
+class house : public item
+{
+	public:
+	house(SDL_Renderer * screen);
+	
+
+	public:
+	item door;
+
+};
+
 class player : public item
 {
 	public:
@@ -14,11 +25,14 @@ class player : public item
 	void draw();
 	// void activate(); // check facing tile for activity
 	void setAnimation(std::string keyword);
+	void clear();
+	void togglePunch();
 	
 
 	public:
 	tilemap frames;
 	bool faceLeft;
+	bool punch;
 	std::unordered_map <std::string, animation*> actions;
 	animation * currentAnimation;
 

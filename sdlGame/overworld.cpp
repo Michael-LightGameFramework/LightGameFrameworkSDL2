@@ -1,6 +1,7 @@
 #include <overworld.h>
 #include <iostream>
 
+player * playerRef;
 
 item * spawn(SDL_Renderer * screen)
 {
@@ -12,6 +13,12 @@ void destroy(item * key)
 	delete (overworld *) key;
 }
 
+void endPunch(item * thing)
+{
+	playerRef->punch = false;
+}
+
+
 /////////////////////////////////
 // PLAYER
 ////////////////////////////////
@@ -19,7 +26,9 @@ void destroy(item * key)
 
 player::player(SDL_Renderer * screen)
 {
+	playerRef = this;
 	faceLeft = false;
+	punch = false;
 	ren = screen;
 	frames.setRenderer(screen);
 	frames.addImage("res/images/classicPlayer.png", 16, 16);
@@ -47,7 +56,15 @@ player::player(SDL_Renderer * screen)
 	mapAnimation("walk", 11);
 	actions["walk"]->setFPS(6);
 
-	currentAnimation = actions["idle"];
+	actions["punch"] = new animation(screen);
+	mapAnimation("punch", 24);
+//	mapAnimation("punch", 25);
+	mapAnimation("punch", 26);
+	actions["punch"]->setFPS(6);
+	actions["punch"]->setLoops(1);
+	actions["punch"]->onEndLoop = endPunch;
+
+	currentAnimation = actions["walk"];
 
 }
 
@@ -55,6 +72,10 @@ void player::mapAnimation(std::string name, int index)
 {
 	if(actions[name])
 	{
+		if(!frames.get(index))
+		{
+			std::cout << "Frame " << index << " was NULL\n";
+		}
 		actions[name]->addImage(frames.get(index));
 	}
 	else
@@ -65,6 +86,7 @@ void player::mapAnimation(std::string name, int index)
 
 void player::draw()
 {
+	//frames.draw(); // was useful to confirm asset was loaded...
 	if(currentAnimation)
 	{
 		if(faceLeft)
@@ -95,6 +117,15 @@ void player::setAnimation(std::string keyword)
 	}
 }
 
+void player::clear()
+{
+	for(auto &n : actions)
+	{
+		delete n.second;
+	}
+
+	frames.clear();
+}
 
 
 ////////////////////////////////
@@ -165,6 +196,10 @@ void overworld::handleEvent(SDL_Event * ev)
 				case SDLK_DOWN:
 					down = true;
 					break;
+				case SDLK_SPACE:
+					jones->actions["punch"]->frameCount = 0;
+					jones->punch = true;
+					break;
 			}
 			break;
 		case SDL_KEYUP:
@@ -182,6 +217,8 @@ void overworld::handleEvent(SDL_Event * ev)
 				case SDLK_DOWN:
 					down = false;
 					break;
+				case SDLK_SPACE:
+					break;
 			}
 			break;
 	}
@@ -193,11 +230,14 @@ void overworld::update(int tick)
 	jones->setAnimation("idle");
 	if(up)
 	{
+
+		jones->setAnimation("walk");
 		jones->move(0, -speedY);
 	
 	}
 	if(down)
 	{
+		jones->setAnimation("walk");
 		jones->move(0, speedY);
 	}
 	if(right)
@@ -212,6 +252,11 @@ void overworld::update(int tick)
 		jones->faceLeft = true;
 		jones->move(-speedX, 0);
 	}
+	if(jones->punch)
+	{
+		jones->setAnimation("punch");
+	}
+
 	if(jones->getPos()->x > 900)
 	{
 		bkg->move(-speedX, 0);

@@ -73,9 +73,15 @@ void player::accelerate(bool left, bool right, bool up, bool down)
                 speedX += accelX;
         }
 
-	if(speedX > -1.0f && speedX < 1.0f)
+	if(speedX >= 0.0f && speedX < 1.0f)
 	{
+		faceLeft = false;
 		angle = (5.0 * speedY)/0.43f;
+	}
+	else if(speedX <= 0.0f && speedX >= -1.0f)
+	{
+		faceLeft = true;
+		angle = (-5.0 * speedY)/0.43f;
 	}
 	else if(speedX >= 1.0f)
         {

@@ -20,6 +20,7 @@ struct circle
 	int x, y, r;
 };
 
+class board;
 class item
 {
 	public:
@@ -43,15 +44,17 @@ class item
 	virtual void update(int tick);
 	SDL_Texture * getImage();
 	void setImage(SDL_Texture * img);
+	void drawHitShape();
 
-	protected:
+	public:
 	SDL_Renderer * ren;
 	SDL_Texture * image;
 	SDL_Rect pos;
 	circle center;
 	int oldTick;
 	bool owned; // do we need to dealocate image?
-
+	bool solid;
+	bool shown;
 };
 
 class animation : public item
@@ -68,11 +71,16 @@ class animation : public item
 	void freeImages();
 	void setFPS(int FPS);
 	virtual void update(int tick);
+	void setLoops(long long count);
 
-	protected:
+	void (*onEndLoop)(item *);
+
+	public:
 	int frameCount;
 	std::vector <SDL_Texture *> images;
 	int desiredDelta;
+	long long loopCount;
+	long long loopDefault;
 
 
 };
@@ -88,6 +96,7 @@ class tilemap : public item
         void clear();
         // get the last tile in the set.
         item * last();
+	void draw();
 
         public:
         std::vector <item *> tiles;
@@ -95,6 +104,13 @@ class tilemap : public item
 
 };
 
+class warpTile : public item
+{
+	public:
+	warpTile();
+	warpTile(SDL_Renderer * screen);
+
+};
 
 class group : public item
 {
@@ -131,7 +147,7 @@ class board : public item
 	// set fin = true when board is done running, also set request to new board, or leave Null to get default
 	bool fin;
 	bool pause;
-	item *Player;
+//	item *Player;
 	animation *bkg;
 	group drawn;
 	group click;

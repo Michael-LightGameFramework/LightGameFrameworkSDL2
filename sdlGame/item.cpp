@@ -26,6 +26,11 @@ item::item()
 	pos.w = 100;
 	pos.h = 100;
 	owned = false;
+	center.r = 12;
+	center.x = 12;
+	center.y = 12;
+	shown = true;
+	solid = false;
 }
 
 item::item(SDL_Renderer * screen) : item()
@@ -144,13 +149,16 @@ void item::setCenter(int x, int y, int r)
 void item::draw(double angle)
 {
 
-	if(image != NULL)
+	if(shown)
 	{
-		SDL_RenderCopyEx(ren, image, NULL, &pos, angle, NULL, SDL_FLIP_NONE);
-	}
-	else 
-	{
-		std::cout << "Help, image is NULL at draw()\n";
+		if(image != NULL)
+		{
+			SDL_RenderCopyEx(ren, image, NULL, &pos, angle, NULL, SDL_FLIP_NONE);
+		}
+		else 
+		{
+			std::cout << "Help, image is NULL at draw()\n";
+		}
 	}
 
 }
@@ -193,15 +201,30 @@ void item::setImage(SDL_Texture * img)
 	image = img;
 }
 
+void item::drawHitShape()
+{
+	int px = center.x + pos.x;
+	int py = center.y + pos.y;
+	SDL_Point circumf[361];
+	for(int i = 0; i < 360; i ++)
+	{
+		circumf[i].x = center.r * cos(px);
+		circumf[i].y = center.r * sin(py);
+	}
+	SDL_RenderDrawPoints(ren, circumf, 360);
+}
+
 ////////////// CLASS ANIMATION
 
 animation::animation()
 {
+	loopCount = -1; // loop forever
 
 }
 
 animation::animation(SDL_Renderer * screen)
 {
+	loopCount = -1; // loop forever
 	ren = screen;
 }
 
@@ -223,10 +246,16 @@ bool animation::addImage(std::string filePath)
 
 bool animation::addImage(item * other)
 {
-	if(other->getImage())
+	SDL_Texture * test = other->getImage();
+	if(test)
 	{
-		images.push_back(other->getImage());
+		images.push_back(test);
+		image = test;
 		return true;
+	}
+	else
+	{
+		std::cout << "The item you're trying to put into animation is null image\n";
 	}
 	return false;
 }
@@ -258,6 +287,12 @@ bool animation::loadAnimation(std::string p, std::string zb, std::string ext)
 	return false;
 }
 
+void animation::setLoops(long long count)
+{
+	loopCount = count;
+	loopDefault = count;
+}
+
 void animation::next()
 {
 	if(images.empty())
@@ -268,6 +303,7 @@ void animation::next()
 	{
 		frameCount ++;
 		int index = frameCount % images.size();
+			
 		if(images[index])
 		{
 			image = images[index];
@@ -275,6 +311,18 @@ void animation::next()
 		else
 		{
 			SDL_Log("An animation image is loading as NULL!");
+		}
+		if(index == 0)
+		{
+			loopCount --;
+			if(loopCount == 0)
+			{
+				if(onEndLoop)
+				{
+					onEndLoop(this);
+				}
+				loopCount = loopDefault;
+			}
 		}
 	}
 }
@@ -305,7 +353,7 @@ void animation::setFPS(int FPS)
 
 void animation::update(int tick)
 {
-	if(tick - oldTick > desiredDelta)
+	if(tick - oldTick > desiredDelta && loopCount)
 	{
 		next();
 		oldTick = tick;
@@ -375,20 +423,41 @@ void tilemap::addImage(std::string filePath, int w, int h)
 					SDL_SetRenderTarget(ren, dest);
 					SDL_Rect subRect{k, i, w, h};
 					SDL_RenderCopy(ren, src, &subRect, NULL);
+					last()->setPos(i, k);
+					last()->setSize(w, h);
 					last()->setImage(dest);
+					if(!last()->getImage())
+					{
+						std::cout << "hmm. tilemap loaded a null image.\n";
+					}
 					SDL_SetRenderTarget(ren, orig);
 				}
 			}
+			std::cout << "tileMap loaded " << tiles.size() << " Tiles.\n";
 			SDL_DestroyTexture(src);
-
 		}
-
-
 	}
 	else
 	{
 		std::cout << "Cannot add image to tilemap while renderer is NULL: " << filePath << std::endl;
 	}
+}
+
+void tilemap::draw()
+{
+	for(auto &n : tiles)
+	{
+		n->draw();
+	}
+}
+
+void tilemap::clear()
+{
+	for(auto &n : tiles)
+	{
+		delete n;
+	}
+	freeImage();
 }
 
 
@@ -465,7 +534,7 @@ board::board()
 	name = "board";
 	request = "";
 	fin = false;
-	Player = NULL;
+	//Player = NULL;
 	bkg = NULL;
 	pause = false;
 }
@@ -480,7 +549,7 @@ void board::draw()
 {
 	bkg->draw();
 	drawn.draw();
-	Player->draw();
+	//Player->draw();
 }
 
 void board::move(int x, int y)
