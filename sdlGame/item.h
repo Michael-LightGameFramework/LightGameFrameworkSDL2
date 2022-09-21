@@ -6,12 +6,14 @@
 #include <SDL2/SDL_mixer.h>
 #include <string>
 #include <vector>
-#include <unordered_map>
 
 void itemInit();
 void itemQuit();
 
-enum Direction {Up, Down, Left, Right};
+namespace facing
+{
+	enum Direction {Up, Down, Left, Right};
+};
 
 std::string absPath();
 
@@ -85,11 +87,14 @@ class animation : public item
 
 };
 
+
+
 class tilemap : public item
 {
         public:
         tilemap();
         tilemap(SDL_Renderer * screen);
+	~tilemap();
         item * get(int index);
         // tilemap image, tile w, tile h
         void addImage(std::string filePath, int w, int h);
@@ -97,12 +102,15 @@ class tilemap : public item
         // get the last tile in the set.
         item * last();
 	void draw();
+	int size();
 
         public:
         std::vector <item *> tiles;
 
 
 };
+
+
 
 class warpTile : public item
 {
@@ -115,12 +123,19 @@ class warpTile : public item
 class group : public item
 {
 	public:
+	group();
+	group(group & groupOther);
 	virtual void draw();
 	virtual void draw(double angle);
 	virtual void addRef(item * other);
 	virtual void move(int x, int y);
 	std::vector <item *> getBoundedItems(SDL_Rect bounds);
 	item * last();
+	item * at(int index);
+	int size();
+	group inRange(SDL_Rect * box);
+	void free();
+	
 
 	public:
 	std::vector <item *> items;

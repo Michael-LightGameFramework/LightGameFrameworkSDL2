@@ -17,6 +17,14 @@ void itemQuit()
 	SDL_Quit();
 }
 
+std::string absPath()
+{
+	char * temp = SDL_GetPrefPath("LightGameFramework", "NoTitle");
+	std::string path = temp;
+	SDL_free(temp);
+	return path;
+}
+
 item::item()
 {
 	oldTick = 0;
@@ -66,7 +74,7 @@ bool item::loadImage(std::string filename)
 }
 void item::freeImage()
 {
-	if(image != NULL)
+	if(image != NULL && owned)
 	{
 		SDL_DestroyTexture(image);
 		image = NULL;
@@ -164,25 +172,31 @@ void item::draw(double angle)
 }
 void item::drawHFlip()
 {
-	if(image != NULL)
+	if(shown)
 	{
-		SDL_RenderCopyEx(ren, image, NULL, &pos, 0, NULL, SDL_FLIP_HORIZONTAL);
-	}
-	else 
-	{
-		std::cout << "Help, image is NULL at draw()\n";
+		if(image != NULL)
+		{
+			SDL_RenderCopyEx(ren, image, NULL, &pos, 0, NULL, SDL_FLIP_HORIZONTAL);
+		}
+		else 
+		{
+			std::cout << "Help, image is NULL at draw()\n";
+		}
 	}
 }
 
 void item::draw()
 {
-	if(image != NULL)
+	if(shown)
 	{
-		SDL_RenderCopy(ren, image, NULL, &pos);
-	}
-	else 
-	{
-		std::cout << "Help, image is NULL at draw()\n";
+		if(image != NULL)
+		{
+			SDL_RenderCopy(ren, image, NULL, &pos);
+		}
+		else 
+		{
+			std::cout << "Help, image is NULL at draw()\n";
+		}
 	}
 }
 
@@ -374,6 +388,11 @@ tilemap::tilemap() : item ()
 	
 }
 
+tilemap::~tilemap()
+{
+	clear();
+}
+
 item * tilemap::get(int index)
 {
 	if(index < tiles.size() && index >= 0)
@@ -424,7 +443,6 @@ void tilemap::addImage(std::string filePath, int w, int h)
 					SDL_Rect subRect{k, i, w, h};
 					SDL_RenderCopy(ren, src, &subRect, NULL);
 					last()->setPos(i, k);
-					last()->setSize(w, h);
 					last()->setImage(dest);
 					if(!last()->getImage())
 					{
@@ -433,7 +451,6 @@ void tilemap::addImage(std::string filePath, int w, int h)
 					SDL_SetRenderTarget(ren, orig);
 				}
 			}
-			std::cout << "tileMap loaded " << tiles.size() << " Tiles.\n";
 			SDL_DestroyTexture(src);
 		}
 	}
@@ -457,7 +474,15 @@ void tilemap::clear()
 	{
 		delete n;
 	}
-	freeImage();
+	if(image)
+	{
+		freeImage();
+	}
+}
+
+int tilemap::size()
+{
+	return tiles.size();
 }
 
 
@@ -465,6 +490,19 @@ void tilemap::clear()
 // GROUP
 ////////////////////////////
 
+group::group()
+{
+
+}
+
+group::group(group & other)
+{
+	int len = other.items.size();
+	for(int i = 0; i < len; i ++)
+	{
+		addRef(other.at(i));
+	}
+}
 void group::draw()
 {
 	for(int i = 0; i < items.size(); i ++)
@@ -524,6 +562,39 @@ item * group::last()
 	return NULL;
 }
 
+item * group::at(int index)
+{
+	return items[index];
+}
+
+int group::size()
+{
+	return items.size();
+}
+
+group group::inRange(SDL_Rect * box)
+{
+	group temp;
+	int len = items.size();
+	for(int i = 0; i < len; i ++)
+	{
+		if(SDL_HasIntersection(items[i]->getPos(),  box))
+		{
+			temp.addRef(items[i]);
+		}
+	}
+	return temp;
+}
+
+void group::free()
+{
+	int len = items.size();
+	for(int i = 0; i < len; i ++)
+	{
+		item * thing = items[i];
+		delete thing;
+	}
+}
 
 ////////////////////////////////////////
 // Board Class

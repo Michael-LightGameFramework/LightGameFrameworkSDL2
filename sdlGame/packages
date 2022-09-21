@@ -1,2 +1,6 @@
-/home/michael/sdlGame/overworld.so
-/home/michael/sdlGame/start.so
+# The next commented lines are examples of how not to add a plugin:
+# /home/michael/sdlGame/test.so # comments can't be at the end
+#	l /home/michael/sdlGame/overworld.so # the lead whitspace is OK, but the l is blocking
+# overworld.so # It needs to be an absolute path... so this won't work on your system unless your username is michael. Hmm.
+/home/michael/sdlGame/lvl1.so
+/home/michael/

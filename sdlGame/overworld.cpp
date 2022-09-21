@@ -197,8 +197,11 @@ void overworld::handleEvent(SDL_Event * ev)
 					down = true;
 					break;
 				case SDLK_SPACE:
-					jones->actions["punch"]->frameCount = 0;
-					jones->punch = true;
+					if(!(jones->punch))
+					{
+						jones->actions["punch"]->frameCount = 0;
+						jones->punch = true;
+					}
 					break;
 			}
 			break;

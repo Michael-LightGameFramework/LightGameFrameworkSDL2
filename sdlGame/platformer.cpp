@@ -15,6 +15,7 @@ platform::platform(SDL_Renderer * screen)
 	moving = false;
 	busting = false;
 	busted = NULL;
+	loadImage("res/images/platformWood.png");
 }
 
 void platform::loadBustAnimation(std::string pre, std::string zb, std::string ext)
@@ -45,6 +46,8 @@ void platform::moveBetween(int x, int y)
 
 void platform::update(int tick)
 {
+	offsetX = pos.x;
+	offsetY = pos.y;
 	if(moving)
 	{
 		if(offsetX <= destX)
@@ -52,8 +55,8 @@ void platform::update(int tick)
 			offsetX += speedX;
 			if(offsetX > destX)
 			{
-				float hold = offsetX;
-				offsetX = startX;
+				float hold = destX;
+				destX = startX;
 				startX = hold;
 			}
 		}
@@ -62,8 +65,8 @@ void platform::update(int tick)
 			offsetX -= speedX;
 			if(offsetX < destX)
 			{
-				float hold = offsetX;
-				offsetX = startX;
+				float hold = destX;
+				destX = startX;
 				startX = hold;
 			}
 		}	
@@ -72,8 +75,8 @@ void platform::update(int tick)
 			offsetY += speedY;
 			if(offsetY > destY)
 			{
-				float hold = offsetY;
-				offsetY = startY;
+				float hold = destY;
+				destY = startY;
 				startY = hold;
 			}
 		}
@@ -82,8 +85,8 @@ void platform::update(int tick)
 			offsetY -= speedY;
 			if(offsetY < destY)
 			{
-				float hold = offsetY;
-				offsetY = startY;
+				float hold = destY;
+				destY = startY;
 				startY = hold;
 			}
 		}
@@ -92,6 +95,8 @@ void platform::update(int tick)
 	{
 		busted->update(tick);
 	}
+	pos.x = offsetX;
+	pos.y = offsetY;
 }
 
 ////////////////////////////////////////
