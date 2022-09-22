@@ -12,7 +12,8 @@ int main(int argc, char ** argv)
 	SDL_Renderer * screen = SDL_CreateRenderer(win, -1, SDL_RENDERER_PRESENTVSYNC);
 
 	game gm(screen);
-	std::ifstream ifile("packages");
+	std::string pluginList = absPath() + "packages";
+	std::ifstream ifile(pluginList.c_str());
 	std::string temp;
 	while(std::getline(ifile, temp))
 	{

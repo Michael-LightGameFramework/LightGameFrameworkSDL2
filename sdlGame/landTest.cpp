@@ -25,7 +25,7 @@ landTest::landTest(SDL_Renderer * screen)
 	((platform*)thing)->moveBetween(1300, 400);
 
 	moon = new item(screen);
-	moon->loadImage("res/images/MoonDog.png");
+	moon->loadImage(absPath() + "res/images/MoonDog.png");
 	moon->setPos(-12, -7);
 	moon->setSize(250, 220);
 

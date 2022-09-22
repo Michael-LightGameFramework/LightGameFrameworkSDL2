@@ -11,4 +11,7 @@ There are three names that get run-time priority as seen in game.cpp;
 Currently each board has a variable that triggers a swapping out of boards called "fin". If you set fin to true, then you can also set a request board using the "request" string. The game loop will then try to load your requested board, or will default to the overworld board.
 The variable "fin" should always be set to false on a board "init()" function to make them replayable.
 
-
+#BUILD AND INSTALL
+Call the following to build and install:
+  make all
+  make install

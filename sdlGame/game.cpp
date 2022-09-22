@@ -28,11 +28,16 @@ void game::addLevel(std::string filePath)
 		{
 			return;
 		}
+		filePath = absPath() + filePath;
 		void * hndl = SDL_LoadObject(filePath.c_str());
 		if(!(hndl))
 		{
-			SDL_Log(SDL_GetError());
-			std::cout << "failed to load " << filePath << std::endl;
+			if(filePath != absPath() + "test.so")
+			{
+				SDL_Log(SDL_GetError());
+				std::cout << "failed to load " << filePath << std::endl;
+			}
+			// else just ignore the lack of test.so
 			return;
 		}
 		handle.push_back(hndl);
@@ -128,9 +133,14 @@ void game::gameLoop()
 			{
 				currentLvl = levels["overworld"];
 			}
-			else
+			else if(currentLvl != NULL)
 			{
 				currentLvl = levels[currentLvl->request];
+			}
+			else
+			{
+				SDL_Log("The requested level named %s was not loaded, but was requested by %s. Please check packages is correctly configured\n", currentLvl->request, currentLvl->name);
+				run = false;
 			}
 
 		}

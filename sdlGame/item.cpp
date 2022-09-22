@@ -605,9 +605,10 @@ board::board()
 	name = "board";
 	request = "";
 	fin = false;
-	//Player = NULL;
+	p_Player = NULL;
 	bkg = NULL;
 	pause = false;
+	edgeBuffer = {200, 200, 1080, 720};
 }
 
 board::board(SDL_Renderer * rend) : board()
@@ -615,12 +616,40 @@ board::board(SDL_Renderer * rend) : board()
 	ren = rend;
 }
 
+void board::init()
+{
+	fin = false;
+	if(ren == NULL)
+	{
+		std::cout << "Called init on board with NULL renderer.\n";
+	}
+}
+
+void board::update(int tick)
+{
+	if(p_Player)
+	{
+		SDL_Rect *temp = p_Player->getPos();
+		if(temp->x < edgeBuffer.x)
+		{
+			drawn.move(cameraSpeed.x, 0);	
+		}
+		else if(temp->x > edgeBuffer.w)
+		{
+			drawn.move(cameraSpeed.x, 0);	
+		}
+	}
+}
+
 
 void board::draw()
 {
 	bkg->draw();
 	drawn.draw();
-	//Player->draw();
+	if(p_Player)
+	{
+		p_Player->draw();
+	}
 }
 
 void board::move(int x, int y)
@@ -633,14 +662,6 @@ void board::handleEvent(SDL_Event * ev)
 
 }
 
-void board::init()
-{
-	fin = false;
-	if(ren == NULL)
-	{
-		std::cout << "Called init on board with NULL renderer.\n";
-	}
-}
 
 void board::togglePause()
 {

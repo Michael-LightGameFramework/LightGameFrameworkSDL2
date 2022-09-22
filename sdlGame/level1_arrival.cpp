@@ -324,17 +324,17 @@ level1::level1(SDL_Renderer * screen): board(screen)
 	giveGoal = activatePlanet;
 
 	bkg = new item(screen);
-	bkg->loadImage("res/images/bkg.png");
+	bkg->loadImage(absPath() + "res/images/bkg.png");
 	bkg->setSize(windowSize.w, windowSize.h);
 	bkg->setPos(0,0);
 
 	goal.setRenderer(screen);
-	goal.loadImage("res/images/earth.png");
+	goal.loadImage(absPath() + "res/images/earth.png");
 	goal.setSize(600, 600);
 	goal.setCenter(150, 150, 150);
 
 	refugee = new animation(screen);
-	refugee->loadAnimation("res/images/refugee", "0", ".png");
+	refugee->loadAnimation(absPath() + "res/images/refugee", "0", ".png");
 	refugee->setFPS(3);
 
 	refugeeSpawn.setRenderer(screen);
@@ -346,7 +346,7 @@ level1::level1(SDL_Renderer * screen): board(screen)
 	refugeeSpawn.onEmpty = giveGoal;
 
 	star = new animation(screen);
-	star->loadAnimation("res/images/star", "1", ".png");
+	star->loadAnimation(absPath() + "res/images/star", "1", ".png");
 	star->setPos(50, 50);
 
 	starSpawn.setRenderer(screen);
@@ -361,7 +361,7 @@ level1::level1(SDL_Renderer * screen): board(screen)
 	starSpawn.fastForward(15000);
 
 	ship.setRenderer(screen);
-	ship.loadImage("res/images/player.png");
+	ship.loadImage(absPath() + "res/images/player.png");
 	ship.setCenter(135, 59, 54);
 	ship.setPos(30, windowSize.h/2 - 150);
 	ship.setSize(245, 115);

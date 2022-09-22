@@ -15,7 +15,7 @@ platform::platform(SDL_Renderer * screen)
 	moving = false;
 	busting = false;
 	busted = NULL;
-	loadImage("res/images/platformWood.png");
+	loadImage(absPath() + "res/images/platformWood.png");
 }
 
 void platform::loadBustAnimation(std::string pre, std::string zb, std::string ext)

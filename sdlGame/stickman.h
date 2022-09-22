@@ -72,6 +72,7 @@ class world : public board
 {
 	public:
 	world(SDL_Renderer * screen);
+	void init();
 	void update(int tick);
 	void handleEvent(SDL_Event * ev);
 	void draw();

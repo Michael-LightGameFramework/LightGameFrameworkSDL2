@@ -150,6 +150,7 @@ class board : public item
 	board(SDL_Renderer * rend);
 	// populate board with tiles, set to default state
 	virtual void init();
+	virtual void update(int tick);
 	virtual void draw();
 	void move(int x, int y);
 	virtual void handleEvent(SDL_Event * ev);
@@ -162,11 +163,13 @@ class board : public item
 	// set fin = true when board is done running, also set request to new board, or leave Null to get default
 	bool fin;
 	bool pause;
-//	item *Player;
+	SDL_Point cameraSpeed;
+	item *p_Player;
 	animation *bkg;
 	group drawn;
 	group click;
 	group collide;
+	SDL_Rect edgeBuffer;
 
 	bool left, right, up, down; // direction keys, handleEvent
 

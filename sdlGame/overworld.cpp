@@ -31,7 +31,7 @@ player::player(SDL_Renderer * screen)
 	punch = false;
 	ren = screen;
 	frames.setRenderer(screen);
-	frames.addImage("res/images/classicPlayer.png", 16, 16);
+	frames.addImage(absPath() + "res/images/classicPlayer.png", 16, 16);
 	actions["die"] = new animation(screen);
 	mapAnimation("die", 0);
 	mapAnimation("die", 1);
@@ -147,18 +147,18 @@ overworld::overworld(SDL_Renderer * screen) : board(screen)
 	jones->setPos(400, 300);
 
 	bkg = new animation(screen);
-	bkg->loadAnimation("res/images/OverBkg", "0", ".png");
+	bkg->loadAnimation(absPath() + "res/images/OverBkg", "0", ".png");
 	bkg->setSize(6000, 6000);
 	bkg->setPos(0, 0);
 
 
 	land.addRef(new item(screen));
-	land.last()->loadImage("res/images/land02.png");
+	land.last()->loadImage(absPath() + "res/images/land02.png");
 	land.last()->setPos(100, 20);
 	land.last()->setSize(4000, 2335);
 
 	land.addRef(new item(screen));
-	land.last()->loadImage("res/images/land01.png");
+	land.last()->loadImage(absPath() + "res/images/land01.png");
 	land.last()->setPos(700, 220);
 	land.last()->setSize(1500, 835);
 

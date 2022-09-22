@@ -29,13 +29,13 @@ hexBoard::hexBoard(SDL_Renderer * screen) : board(screen)
 
 	name = "test";
 	bkg = new animation(screen);
-	bkg->loadImage("res/images/OverBkg0.png");
+	bkg->loadImage(absPath() + "res/images/OverBkg0.png");
 	bkg->setPos(0, 0);
 	bkg->setSize(winW, winH);
 
 	tileSrc.setRenderer(screen);
-	tileSrc.addImage("res/images/hexGrid.png", 32, 48);
-	setSnapSize(15, 11);
+	tileSrc.addImage(absPath() + "res/images/hexGrid.png", 32, 48);
+	//setSnapSize(15, 11);
 
 	bool isOffset = false;
 	for(int i = 0; i < 6; i ++)

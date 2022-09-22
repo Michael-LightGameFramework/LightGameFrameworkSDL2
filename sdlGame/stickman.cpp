@@ -151,7 +151,7 @@ world::world(SDL_Renderer * screen)
 	name = "fight";
 	ren = screen;
 	bkg = new animation(screen);
-	bkg->loadImage("res/images/OverBkg0.png");
+	bkg->loadImage(absPath() + "res/images/OverBkg0.png");
 
 }
 

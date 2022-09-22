@@ -1,10 +1,11 @@
 #include <SDL2/SDL.h>
+#include <iostream>
 
 int main()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	
-	SDL_Log(SDL_GetPrefPath("LightGameFramework", "NoTitle"));
+	std::cout << (SDL_GetPrefPath("LightGameFramework", "NoTitle"));
 	SDL_Quit();
 	
 }
